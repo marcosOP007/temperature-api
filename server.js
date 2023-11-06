@@ -33,13 +33,13 @@ app.set('view engine', 'ejs');
 // Use o cors para permitir solicitações de qualquer origem (*)
 app.use(cors());
 
-app.use('/newview', express.static(path.join(__dirname, '/src/Views')))
+app.use('/newview', express.static(path.join(__dirname, '/src/views')))
 app.use('/view', express.static(path.join(__dirname, '/src/viewsOfficial/')))
 app.use('/assets', express.static(path.join(__dirname, '/src/viewsOfficial/assets')))
-app.use('/js', express.static(path.join(__dirname, '/src/Views/js')))
+app.use('/js', express.static(path.join(__dirname, '/src/views/js')))
 //app.set('public', path.join(__dirname, 'src/views/html/public'));
 
-//app.use('/', express.static(path.join(__dirname, '/src/Views')))
+//app.use('/', express.static(path.join(__dirname, '/src/views')))
 
 
 app.use('/index/', htmlRoutes);
