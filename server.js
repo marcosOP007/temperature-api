@@ -37,8 +37,9 @@ app.use('/newview', express.static(path.join(__dirname, '/src/Views')))
 app.use('/view', express.static(path.join(__dirname, '/src/viewsOfficial/')))
 app.use('/assets', express.static(path.join(__dirname, '/src/viewsOfficial/assets')))
 app.use('/js', express.static(path.join(__dirname, '/src/Views/js')))
+//app.set('public', path.join(__dirname, 'src/views/html/public'));
 
-// app.use('/', express.static(path.join(__dirname, '/src/Views')))
+//app.use('/', express.static(path.join(__dirname, '/src/Views')))
 
 
 app.use('/index/', htmlRoutes);
