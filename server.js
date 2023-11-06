@@ -39,6 +39,8 @@ app.use('/assets', express.static(path.join(__dirname, '/src/viewsOfficial/asset
 app.use('/js', express.static(path.join(__dirname, '/src/Views/js')))
 
 // app.use('/', express.static(path.join(__dirname, '/src/Views')))
+
+
 app.use('/index/', htmlRoutes);
 app.use('/api/', datatestRoutes);
 app.use('/auth/', userRoutes); 

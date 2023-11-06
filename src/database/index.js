@@ -8,7 +8,7 @@ const Sensor = require('../models/Sensor')
 const TemperatureLog = require('../models/TemperatureLogs')
 
 
-const connection = new Sequelize("postgres://vqsexyea:LTAt36KafrnaMldQlFCbGhcRtZTb3uJg@isabelle.db.elephantsql.com/vqsexyea",dbConfig);
+const connection = new Sequelize(process.env.DB_URI,dbConfig);
 
 User.init(connection);
 Channel.init(connection);
