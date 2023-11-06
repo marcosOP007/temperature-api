@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
   try {
     const secret = process.env.SECRET;
 
-    const token = jwt.sign({id: user.id}, secret, {expiresIn: '1h'});
+    const token = jwt.sign({id: user.id}, secret, {expiresIn: '24h'});
     res.cookie("token", token, {
       httpOnly: true,
     });
@@ -113,7 +113,7 @@ router.post('/register', async (req, res, next) => {
       const passwordHash = await bcrypt.hash(password, salt);
 
 
-      User.create({name, email, hash_password: passwordHash, permission_type: 'MODERATOR'})
+      User.create({name, email, hash_password: passwordHash, permission_type: 'USER'})
 
       return res.redirect('/index/login');
   }catch(error){

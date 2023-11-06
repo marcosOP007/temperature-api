@@ -66,6 +66,12 @@ router.get('/adm/sensor', AuthorizationMiddle, async (req, res) => {
     res.render(path.join(parentDir, '/viewsOfficial/criarSensor.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 
 })
 
+
+router.get('/channel/create', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {
+    res.render(path.join(__dirname, '../views/html/moderator/createChannel.ejs'), {userId: req.user_id}) 
+})
+
+
 router.get('/adm/canal', AuthorizationMiddle, async (req, res) => {
     const parentDir = path.join(__dirname, '..')
     res.render(path.join(parentDir, '/viewsOfficial/criarCanal.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 

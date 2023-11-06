@@ -24,7 +24,7 @@ router.post('/',permissionCheck.verifyUserPermission('MODERATOR'), async (req, r
     try {
         const channelData = req.body;
         const channel = await ChannelController.createChannel({name: req.body.name,description: req.body.description,creator_id: req.user_id, token_read: RandomToken(16), token_write: RandomToken(16)});
-        res.status(201).json(channel);
+        res.status(200);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar canal.' });
