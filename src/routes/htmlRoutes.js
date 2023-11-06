@@ -19,13 +19,13 @@ router.get('/', (req, res) =>{
 
  router.get('/login', (req, res) =>{
     console.log("pagina pegada com sucesso")
-   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
+   res.render(path.join(__dirname, '../Views/html/public/login.ejs'))
 })
     
 router.get('/registro', async (req, res) =>{
     console.log(await (UserController.getAllModerator()))
     const fs = require('fs');
-    res.render(path.join(__dirname, '../views/html/public/registro.ejs'));
+    res.render(path.join(__dirname, '../Views/html/public/registro.ejs'));
     
 })
 
@@ -38,7 +38,7 @@ router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERA
         return res.send("canal não existe")
     }
     console.log(channel)
-    res.render(path.join(__dirname, '../views/html/moderator/adm-editchannel.ejs'), {
+    res.render(path.join(__dirname, '../Views/html/moderator/adm-editchannel.ejs'), {
         dadosSensoresADM: channel,
         userId: req.query.id,
     });
@@ -81,7 +81,7 @@ router.get('/adm/', AuthorizationMiddle, async(req, res) => {
 })
 
 router.get('/channel/edit/:id', AuthorizationMiddle, async(req, res) => {
-    res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
+    res.render(path.join(__dirname, '../Views/html/moderator/edit_channel.ejs'), {dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
 })
 
 
@@ -94,7 +94,7 @@ router.post('/deletarSensorClient/:id', AuthMiddle, async(req, res) => {
 
 
 router.get('/sensor/edit/:id', AuthorizationMiddle, async(req, res) => {
-    res.render(path.join(__dirname, '../views/html/moderator/edit_sensor.ejs'), {dadoSensor: await SensorController.getSensorById(req.params.id)})
+    res.render(path.join(__dirname, '../Views/html/moderator/edit_sensor.ejs'), {dadoSensor: await SensorController.getSensorById(req.params.id)})
 })
 
 router.post('/admDeletarSensor/:id', AuthorizationMiddle, async(sensorId) => {
@@ -112,7 +112,7 @@ router.get('/:id', AuthMiddle, Authcation, async (req, res) => {
         //console.log("=======================================================" , user)
         
         if (!user) {
-            return res.render(path.join(__dirname, '../views/html/public/login.ejs'));
+            return res.render(path.join(__dirname, '../Views/html/public/login.ejs'));
         }
         const userPermission = user.permission_type;
 
@@ -120,22 +120,22 @@ router.get('/:id', AuthMiddle, Authcation, async (req, res) => {
         if (userPermission === 'USER') {
             const data = await UserController.getAllChannelsByUser(userId);
 
-            res.render(path.join(__dirname, '../views/html/user/index.ejs'), { dados: data,   userID: userId });
+            res.render(path.join(__dirname, '../Views/html/user/index.ejs'), { dados: data,   userID: userId });
         } else if (userPermission === 'MODERATOR') {
-            res.render(path.join(__dirname, '../views/html/moderator/index.ejs'), {
+            res.render(path.join(__dirname, '../Views/html/moderator/index.ejs'), {
                 dados: await ChannelController.getAllChannelByModerator(userId),
                 userId:userId,
             });
 
         } else if (userPermission === 'ADMIN') {
             
-            res.render(path.join(__dirname, '../views/html/admin/index.ejs'), {
+            res.render(path.join(__dirname, '../Views/html/admin/index.ejs'), {
                 dados: await UserController.getAllModerator(),
                 userId:userId,
             });
         } else {
             // Redirecione para uma página de permissão negada ou faça algo apropriado
-            res.render(path.join(__dirname, '../views/html/public/404.ejs'));
+            res.render(path.join(__dirname, '../Views/html/public/404.ejs'));
         }
     } catch (errora) {
         console.log("erroME: ", errora);
@@ -149,7 +149,7 @@ router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission(
 
     const channels = await ChannelController.getAllChannelByModerator(req.params.id);
 
-    res.render(path.join(__dirname, '../views/html/moderator/channel.ejs'), {
+    res.render(path.join(__dirname, '../Views/html/moderator/channel.ejs'), {
         dados: channels,
         permision: 'ADMIN',
         userID:req.params.id,
@@ -159,7 +159,7 @@ router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission(
 
 router.get('/v/not-autorized', async(req, res)=> {
 
-    res.status(401).render(path.join(__dirname, '../views/html/public/401.ejs'), {
+    res.status(401).render(path.join(__dirname, '../Views/html/public/401.ejs'), {
         login: (req.cookies.token !== undefined ? true : false),
     });
 })
@@ -167,7 +167,7 @@ router.get('/v/not-autorized', async(req, res)=> {
 
 router.get('/v/not-found', async(req, res)=> {
 
-    res.status(401).render(path.join(__dirname, '../views/html/public/404.ejs'), {
+    res.status(401).render(path.join(__dirname, '../Views/html/public/404.ejs'), {
         login: (req.cookies.token !== undefined ? true : false),
     });
 })

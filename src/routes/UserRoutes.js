@@ -101,7 +101,7 @@ router.post('/register', async (req, res, next) => {
   
 
   if (userExists) {
-    return res.render(path.join(__dirname, '../views/html/public/registro.ejs'), {message: "Email usado", nome:"rapaz"})
+    return res.render(path.join(__dirname, '../Views/html/public/registro.ejs'), {message: "Email usado", nome:"rapaz"})
       
   }
 

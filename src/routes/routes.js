@@ -17,7 +17,7 @@ const AuthorizationMiddle = require('../MiddleWares/AuthorizationMiddle')
 //router.get('/users/channels/:userId', UserController.getAllChannelsByUserRouter)
 
 router.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/HTML/index.html'))
+    res.sendFile(path.join(__dirname, '../Views/HTML/index.html'))
 })
 
 router.get('/', (req, res) => {
