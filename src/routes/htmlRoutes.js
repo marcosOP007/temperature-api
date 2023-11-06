@@ -19,13 +19,13 @@ router.get('/', (req, res) =>{
 
  router.get('/login', (req, res) =>{
     console.log("pagina pegada com sucesso")
-   res.render(path.join(__dirname, './views/html/public/login.ejs'))
+   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
 })
     
 router.get('/registro', async (req, res) =>{
     console.log(await (UserController.getAllModerator()))
     const fs = require('fs');
-    res.render(path.join(__dirname, '../views/html/public/registro.ejs'));
+    res.render(path.join(__dirname, '/views/html/public/registro.ejs'));
     
 })
 
