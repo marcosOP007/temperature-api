@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>Portal - Bootstrap 5 Admin Dashboard Template For Developers</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">    
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    
+    <!-- FontAwesome JS-->
+    <script defer src="/assets/plugins/fontawesome/js/all.min.js"></script>
+    
+    <!-- App CSS -->  
+    <link id="theme-style" rel="stylesheet" href="/assets/css/portal.css">
+
+</head> 
+
+<body class="app">
+	<%-include ('nav.ejs')%>
+    <div class="app-wrapper">
+	    
+	    <div class="app-content pt-3 p-md-3 p-lg-4">
+			
+		    <div class="container-xl">
+			    
+			    <h1 class="app-page-title">Charts</h1>
+				
+			    <div class="app-card shadow-sm mb-4 border-left-decoration" ></div><!--//app-card-->
+				
+			    <div class="row g-4 mb-4">
+					<%for(i = 0; i < dadosSensores.length; i++){%>	
+			        <div class="col-12 col-lg-6">
+						
+					    <div class="app-card app-card-chart h-100 shadow-sm">
+
+
+					        <div class="app-card-header p-3 border-0">
+						        <h4 class="app-card-title">Sensor <%-`${dadosSensores[i].id}`%></h4>
+					        </div><!--//app-card-header-->
+
+
+					        <div class="app-card-body p-4">		
+										   
+						        <div class="chart-container" id="<%-`chart-container-${dadosSensores[i].id}`%>"></div>
+								
+					        </div><!--//app-card-body-->
+				        </div><!--//app-card-->
+						
+			        </div><!--//col-->
+					<%}%>
+					
+			    </div><!--//row-->
+				
+		    </div><!--//container-fluid-->
+			
+	    </div><!--//app-content-->
+	    
+	    <footer class="app-footer">
+		    <div class="container text-center py-3">
+		         <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+            <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
+		       
+		    </div>
+	    </footer><!--//app-footer-->
+	    
+    </div><!--//app-wrapper-->    					
+
+ 
+    <!-- Javascript -->          
+    <script src="/assets/plugins/popper.min.js"></script>
+    <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+
+    
+    <!-- Charts JS -->    
+
+
+    <!-- Page Specific JS -->
+    <script src="/assets/js/app.js"></script> 
+
+	<script>
+		const sensorData = JSON.parse('<%-JSON.stringify(dadosSensores)%>');
+	
+		async function createChart(sensor) {
+			const chartContainer = document.createElement('canvas');
+			chartContainer.setAttribute("id", `chart-line-${sensor.id}`);
+			document.getElementById(`chart-container-${sensor.id}`).appendChild(chartContainer);
+	
+			const ctx = document.getElementById(`chart-line-${sensor.id}`);
+
+			const dataSensor = await getLogDetails(sensor.id);
+			const chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dataSensor[1],
+					datasets: [{
+						tension: 0.3,
+						fill: 'origin',
+						label: 'Temperatura °C',
+						borderColor: '#04A0A5',
+						hitRadius: 200,
+						backgroundColor: (context) => {
+							const bgColor = [
+								'#fa501d',
+								'#fff4c7',
+								'#fabf3d',
+								'#8adafa'
+							];
+							if(!context.chart.chartArea){
+								return;
+							}
+							const {ctx, data, chartArea: {top, bottom} } = context.chart;
+							const gradientBg = ctx.createLinearGradient(0, top, 0, bottom);
+							gradientBg.addColorStop(0, bgColor[0])
+							gradientBg.addColorStop(0.75, bgColor[2])
+							gradientBg.addColorStop(0.95, bgColor[1])
+							gradientBg.addColorStop(1, bgColor[3])
+							return gradientBg
+						},
+
+						data: dataSensor[0],
+						borderWidth: 4
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: { y: { beginAtZero: false } }
+				}
+			});
+	
+			setInterval(() => updateChart(sensor.id, chart), 30000);
+		}
+			
+	
+		async function updateChart(sensor_id, chart) {
+			const [data, labels] = await getLogDetails(sensor_id);
+			chart.data.datasets[0].data = data;
+			chart.data.labels = labels;
+			chart.update();
+		}
+	
+		async function getLogDetails(id) {
+			const response = await fetch(`http://localhost:3000/api/sensors/${id}/temperature-logs`);
+			const logs = await response.json();
+			return [
+				logs.map(log => log.temperature),
+				logs.map(log => extractDateTimeComponents(log.created_at))
+			];
+		}
+	
+		function extractDateTimeComponents(dateTime) {
+			const [datePart, timePart] = dateTime.split("T");
+			const [year, month, day] = datePart.split("-");
+			const [hours, minutes] = timePart.split(":");
+			
+			const now = new Date();
+			if (now.getFullYear() != year) return `${day}/${month}/${year}`;
+			else if (now.getMonth() != month) return `${day}/${month} - ${hours}:${minutes}`;
+			else if (now.getDate() != day) return `${day}/${month} - ${hours}:${minutes}`;
+			else return `${hours}:${minutes}:${seconds}`;
+		}
+	
+		sensorData.forEach(createChart);
+	</script>
+	
+
+</body>
+</html> 
+

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Editar Canais</title>
+
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!-- FontAwesome JS-->
+	<script defer src="/assets/js/app.js"></script>
+
+	<!-- App CSS -->
+	<link id="theme-style" rel="stylesheet" href="/assets/css/portal.css">
+
+</head>
+<%-include ('nav.ejs')%>
+
+	<div class="app-wrapper">
+
+		<div class="app-content pt-3 p-md-3 p-lg-4">
+			<div class="container-xl">
+
+				<div class="row g-3 mb-4 align-items-center justify-content-between">
+					<div class="col-auto">
+						<h1 class="app-page-title mb-0">Sensores</h1>
+					</div>
+					<div class="col-auto">
+						<div class="page-utilities">
+							<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+								<div class="col-auto">
+									<!--Search div Orders
+										
+										<form class="table-search-form row gx-1 align-items-center">
+					                    <div class="col-auto">
+					                        <input type="text" id="search-orders" name="searchorders" class="form-control search-orders" placeholder="Search">
+					                    </div>
+					                    <div class="col-auto">
+					                        <button type="submit" class="btn app-btn-secondary">Search</button>
+					                    </div>
+					                </form> -->
+
+								</div><!--//col-->
+							</div><!--//row-->
+						</div><!--//table-utilities-->
+					</div><!--//col-auto-->
+				</div><!--//row-->
+
+
+				<nav id="orders-table-tab"
+					class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+					<a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab"
+						href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">Todos</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="orders-paid-tab" data-bs-toggle="tab"
+						href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab"
+						href="#orders-pending" role="tab" aria-controls="orders-pending"
+						aria-selected="false">Pending</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab"
+						href="#orders-cancelled" role="tab" aria-controls="orders-cancelled"
+						aria-selected="false">Cancelled</a>
+				</nav>
+
+
+				<div class="tab-content" id="orders-table-tab-content">
+					<div class="tab-pane fade show active" id="orders-all" role="tabpanel"
+						aria-labelledby="orders-all-tab">
+						<div class="app-card app-card-orders-table shadow-sm mb-5">
+							<div class="app-card-body">
+								<div class="table-responsive">
+									<table class="table app-table-hover mb-0 text-left">
+										<thead>
+											<tr>
+												<th class="cell">#</th>
+												<th class="cell">Nome Sensor</th>
+												<th class="cell">Data de Criação</th>
+												<th class="cell">Data de Atualização</th>
+												<th class="cell">Correção de Temperatura</th>
+												<th class="cell">Localização</th>
+												<th class="cell">Status</th>
+											</tr>
+										</thead>
+										<tbody>
+
+											<%for(i=0; i < dadosSensoresADM.length; i++){%>
+												<tr>
+													<td><%-dadosSensoresADM[i].id%></td>
+													<td><%-dadosSensoresADM[i].name%></td>
+													<td><%-dadosSensoresADM[i].createdAt%></td>
+													<td><%-dadosSensoresADM[i].updatedAt%></td>
+													<td>
+														<%if(dadosSensoresADM[i].corretion_temperature != false) {%>
+															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+																<path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+															  </svg>
+														<%} else{%>
+															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+																<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+															  </svg>
+															<%}%>
+													</td>
+													<td class="mx-3"><%-dadosSensoresADM[i].location%></td>
+													<td>
+														<%if(dadosSensoresADM[i].status != false) {%>
+															<span class="status text-success ">•</span>
+														<%} else{%>
+															<span class="status text-danger">•</span>
+															<%}%>
+                                                            <%-dadosSensoresADM[i].status%>
+													</td>
+
+													
+													<td><a href="<%= `/index/admEditarSensor/${dadosSensoresADM[i].id}`%>"><button class="btn btn-primary mx-3 text-white">Edit</button></a></td>
+                                                        
+                                                        <form method="post" action="<%= `/index/admDeletarSensor/${dadosSensoresADM[i].id}`%>">
+
+                                                            <td><button class="btn btn-danger mx-3 text-white">Delete</button></td>                                                        
+
+                                                        </form>
+												</tr>
+
+												<%}%>
+
+										</tbody>
+									</table>
+									<a href="http://localhost:3000/index/adm/sensor">
+										<button class="btn btn-primary mt-3 mb-2 mx-2 text-white">
+											Criar Sensor
+										</button>
+									</a>
+								</div><!--//table-responsive-->
+
+							</div><!--//app-card-body-->
+						</div><!--//app-card-->
+						<%if (dadosSensoresADM.length >= 8) {%>
+							<nav class="app-pagination">
+							<ul class="pagination justify-content-center">
+								<li class="page-item disabled">
+									<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+							    </li>
+								<li class="page-item active"><a class="page-link" href="#">1</a></li>
+								<li class="page-item"><a class="page-link" href="#">2</a></li>
+								<li class="page-item"><a class="page-link" href="#">3</a></li>
+								<li class="page-item">
+								    <a class="page-link" href="#">Next</a>
+								</li>
+							</ul> 
+						</nav>
+						<%}%>
+
+					</div><!--//tab-pane-->
+				</div><!--//tab-content-->
+
+
+
+			</div><!--//container-fluid-->
+		</div><!--//app-content-->
+
+		<footer class="app-footer">
+			<div class="container text-center py-3">
+				<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+				<small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
+						style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
+						target="_blank">Xiaoying Riley</a> for developers</small>
+
+			</div>
+		</footer><!--//app-footer-->
+
+	</div><!--//app-wrapper-->
+
+
+	<!-- Javascript -->
+	<script src="/assets/plugins/popper.min.js"></script>
+	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+	<!-- Page Specific JS -->
+	<script src="/assets/js/app.js"></script>
+
+	</body>
+
+</html>
