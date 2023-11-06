@@ -51,12 +51,19 @@ app.use('/api/sensors/', sensorRoutes);
 
 app.use('/api/temperature-logs/', temperatureRoutes);
 
+app.set('views', path.join(__dirname, 'src/views/html/public'));
 
 /*
 app.all('*', (req, res, next) => {
     console.log("wow")
     const err = new CustomError(`Não foi possivel encontrar ${req.originalUrl} no servidor`, 404);
-    next(err);
+    next(err); 
+
+
+
+
+
+
 });
 */
 

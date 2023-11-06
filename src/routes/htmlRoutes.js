@@ -19,7 +19,8 @@ router.get('/', (req, res) =>{
 
  router.get('/login', (req, res) =>{
     console.log("pagina pegada com sucesso")
-   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
+  // res.render(path.join(__dirname, '../views/html/public/login.ejs'))
+  res.render('login')
 })
     
 router.get('/registro', async (req, res) =>{
