@@ -25,7 +25,7 @@ router.get('/', (req, res) =>{
 router.get('/registro', async (req, res) =>{
     console.log(await (UserController.getAllModerator()))
     const fs = require('fs');
-    res.render(path.join(__dirname, '/views/html/public/registro.ejs'));
+    res.render(path.join(__dirname, '../views/html/public/registro.ejs'));
     
 })
 
