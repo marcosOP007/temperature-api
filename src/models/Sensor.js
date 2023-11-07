@@ -19,7 +19,7 @@ class Sensor extends Model {
                 defaultValue: false,
             },
             corretion:{
-                type: DataTypes.INTEGER,
+                type: DataTypes.REAL,
                 defaultValue: 0,
             },
             location: {

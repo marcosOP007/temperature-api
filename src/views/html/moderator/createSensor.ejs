@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Criar Sensores</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+	<link rel="shortcut icon" href="favicon.ico">
+	<script defer src="/assets/js/app.js"></script>
+	<link id="theme-style" rel="stylesheet" href="/assets/css/portal.css">
+</head>
+<%-include ('nav.ejs')%>
+
+	<div class="app-wrapper">
+		<div class="app-content pt-3 p-md-3 p-lg-4">
+			<div class="container-xl">
+				<div class="mb-5">
+					<h2>Criar Sensor</h2>
+					<form id="createSensorForm">
+						<div class="mb-3">
+							<label for="sensorName" class="form-label">Nome</label>
+							<input type="text" class="form-control" id="sensorName" required>
+						</div>
+						
+						<div class="mb-3 form-check">
+							<input type="checkbox" class="form-check-input" id="correctionTemperature" onclick="toggleTemperatureCorrection()">
+							<label class="form-check-label" for="correctionTemperature">Correção de Temperatura</label>
+						</div>
+						<div class="mb-3" id="temperatureCorrectionValue" style="display: none;">
+							<label for="correctionValue" class="form-label">Valor de Correção</label>
+							<input type="number" class="form-control" id="correctionValue">
+						</div>
+						<div class="mb-3">
+							<label for="sensorLocation" class="form-label">Localização</label>
+							<input type="text" class="form-control" id="sensorLocation">
+						</div>
+						<button type="button" class="btn btn-primary text-white" onclick="createSensor()">Criar Sensor</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<footer class="app-footer fixed-bottom">
+			<div class="container text-center py-3">
+				 <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+			<small class="copyright">Design por <i class="fas fa-heart" style="color: #fb866a;"></i> <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a></small>
+			   
+			</div>
+		</footer>
+	</div>
+
+	<script src="/assets/plugins/popper.min.js"></script>
+	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/assets/js/app.js"></script>
+	<script>
+		function toggleTemperatureCorrection() {
+			var checkBox = document.getElementById("correctionTemperature");
+			var text = document.getElementById("temperatureCorrectionValue");
+			if (checkBox.checked == true){
+				text.style.display = "block";
+			} else {
+				text.style.display = "none";
+			}
+		}
+		
+		async function createSensor() {
+			const sensorData = {
+				name: document.getElementById('sensorName').value,
+				channels_id: <%- channelId %>,
+				corretion_temperature: document.getElementById('correctionTemperature').checked,
+				correction_value: document.getElementById('correctionValue').value,
+				location: document.getElementById('sensorLocation').value
+			};
+
+			const response = await fetch('/api/sensors', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(sensorData)
+			});
+
+			if (response.ok) {
+				alert('Sensor criado com sucesso!');
+			} else {
+				alert('Erro ao criar sensor.');
+			}
+		}
+	</script>
+
+	</body>
+
+</html>

@@ -3,56 +3,21 @@
 
 <head>
 	<title>Portal - Bootstrap 5 Admin Dashboard Template For Developers</title>
-
-	<!-- Meta -->
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
 	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">
 	<link rel="shortcut icon" href="/favicon.ico">
-
-	<!-- FontAwesome JS-->
 	<script defer src="/assets/js/app.js"></script>
-
-	<!-- App CSS -->
 	<link id="theme-style" rel="stylesheet" href="/assets/css/portal.css">
-
 </head>
 <%-include ('nav.ejs')%>
 
 	<div class="app-wrapper">
-
 		<div class="app-content pt-3 p-md-3 p-lg-4">
 			<div class="container-xl">
-
-				<div class="row g-3 mb-4 align-items-center justify-content-between">
-					<div class="col-auto">
-						<h1 class="app-page-title mb-0">Sensores</h1>
-					</div>
-					<div class="col-auto">
-						<div class="page-utilities">
-							<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-								<div class="col-auto">
-									<!--Search div Orders
-										
-										<form class="table-search-form row gx-1 align-items-center">
-					                    <div class="col-auto">
-					                        <input type="text" id="search-orders" name="searchorders" class="form-control search-orders" placeholder="Search">
-					                    </div>
-					                    <div class="col-auto">
-					                        <button type="submit" class="btn app-btn-secondary">Search</button>
-					                    </div>
-					                </form> -->
-
-								</div><!--//col-->
-							</div><!--//row-->
-						</div><!--//table-utilities-->
-					</div><!--//col-auto-->
-				</div><!--//row-->
-
-				<form action="/api/sensors/edit/<%= dadoSensor.id%>"  >
+				<form id="form_send" action="/api/sensors/edit/<%= dadoSensor.id%>" method="post" >
 					<div class="mb-4">
 						<label for="idSensor" class="form-label">ID do Sensor</label>
 						<input class="form-control" type="text" value="<%=dadoSensor.id%>" aria-label="" readonly>
@@ -67,12 +32,16 @@
 					  </div>
 					  <div class="mb-3">
 						<%if (dadoSensor.corretion_temperature != false){%>
-						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckChecked" checked> 
+						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckChecked" checked onclick="toggleCorrectionField()"> 
 						<label  class="form-check-label" for="flexCheckChecked">Correção de Temperatura</label>
 						<%} else {%>
-						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckDefault"> 
+						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckDefault" onclick="toggleCorrectionField()"> 
 						<label  class="form-check-label" for="flexCheckDefault">Correção de Temperatura</label>
 							<%}%>
+					  </div>
+					  <div class="mb-3" id="correctionField" <% if(dadoSensor.corretion_temperature == false){ %> style="display: none; <% }%>">
+						<label for="correctionValue" class="form-label">Valor de Correção</label>
+						<input name="corretionValue" id="corretionValue" type="number" class="form-control" >
 					  </div>
 					  <div class="mb-3">
 						<label class="form-check-label" for="status">Status</label>
@@ -108,29 +77,37 @@
 
 
 
-			</div><!--//container-fluid-->
-		</div><!--//app-content-->
-
-		<footer class="app-footer">
-			<div class="container text-center py-3">
-				<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-				<small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
-						style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-						target="_blank">Xiaoying Riley</a> for developers</small>
-
 			</div>
-		</footer><!--//app-footer-->
+		</div>
+
+		<footer class="app-footer fixed-bottom">
+	    <div class="container text-center py-3">
+        <small class="copyright">Design por <i class="fas fa-heart" style="color: #fb866a;"></i> <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a></small>
+	       
+	    </div>
+    </footer><!--//app-footer-->
 
 	</div><!--//app-wrapper-->
 
 
-	<!-- Javascript -->
 	<script src="/assets/plugins/popper.min.js"></script>
 	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-
-
-	<!-- Page Specific JS -->
 	<script src="/assets/js/app.js"></script>
+	<script>
+		function toggleCorrectionField() {
+			var checkBox = document.getElementById("flexCheckChecked");
+			var text = document.getElementById("correctionField");
+			if (checkBox.checked == true){
+				text.style.display = "block";
+			} else {
+				text.style.display = "none";
+			}
+		}
+
+	
+
+
+	</script>
 
 	</body>
 

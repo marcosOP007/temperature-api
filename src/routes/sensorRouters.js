@@ -2,7 +2,10 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 
 const SensorController = require('../Controller/SensorController');
+const { verifyUserPermission } = require('../MiddleWares/permissionCheck');
 const router = express.Router();
+const permissionCheck = require('../MiddleWares/permissionCheck');
+
 
 // Função de manipulação de erros
 const handleError = (res, error) => {
@@ -13,9 +16,9 @@ const handleError = (res, error) => {
 // Função de validação
 const validateSensor = [
     // Validações
-    body('name').optional().isString().withMessage('O nome deve ser uma string.'),
-    body('corretion_temperature').optional().isBoolean().withMessage('A correção de temperatura deve ser um booleano.'),
-    body('corretion').optional().isInt().withMessage('A correção deve ser um número inteiro.'),
+    body('name').isString().withMessage('O nome deve ser uma string.'),
+    body('corretion_temperature').isBoolean().withMessage('A correção de temperatura deve ser um booleano.'),
+    body('corretion').optional().isFloat().withMessage('A correção deve ser um número inteiro.'),
     body('channels_id').optional().isInt().withMessage('O ID do canal deve ser um número inteiro.'),
     body('location').optional().isString().withMessage('A localização deve ser uma string.'),
     body('status').optional().isIn(['ACTIVE', 'INACTIVE']).withMessage('O status deve ser ACTIVE ou INACTIVE.')
@@ -49,26 +52,54 @@ router.post('/', validateSensor, async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    
+
+    if(!req.body.corretion_temperature){
+        req.body.correction_value = 0
+    }
+    console.log(req.body.correction_value)
 
     try {
-        const newSensor = await SensorController.createSensor(req.body);
+        const newSensor = await SensorController.createSensor({
+            name: req.body.name,
+            channels_id: req.body.channels_id,
+            corretion_temperature: req.body.corretion_temperature,
+            corretion: req.body.correction_value,
+            location: req.body.location
+        });
         res.status(201).json(newSensor);
     } catch (error) {
         handleError(res, error);
     }
 });
 
+router.get('/delet/:id', permissionCheck.verifyUserPermission('ADMIN','MODERATOR'), async (req,res) => {
+    try {
+        await SensorController.deleteSensor(req.params.id);
+        res.status(204).redirect('/index/channel/'+req.query.channelId+'/edit_view');
+    } catch (error) {
+        handleError(res, error);
+    }
+})
+
 // Rota para editar um sensor por ID
-router.put('/:id', validateSensor, async (req, res) => {
-    // Verificar erros de validação
+router.post('/edit/:id', permissionCheck.verifyUserPermission('ADMIN','MODERATOR'), async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
+
+    console.log(req.body)
     try {
-        const updatedSensor = await SensorController.updateSensor(req.params.id, req.body);
-        res.status(200).json(updatedSensor);
+        const updatedSensor = await SensorController.updateSensor(req.params.id,{
+            name: req.body.name,
+            corretion_temperature: (req.body.correction_value == 'on' ? true : false),
+            corretion: (req.body.correction_value == 'on' ? req.body.correctionValue : 0),
+            location: req.body.location,
+            status: (req.body.status == 'on' ? 'ACTIVE' : 'INACTIVE')
+        });
+        res.status(200);
     } catch (error) {
         handleError(res, error);
     }

@@ -22,7 +22,7 @@ module.exports = {
         defaultValue: false,
       },
       corretion:{
-        type: Sequelize.INTEGER,
+        type: Sequelize.REAL,
         defaultValue: 0,
       },
       created_at: {

@@ -116,20 +116,23 @@
 													</td>
 
 													
-													<td><a href="<%= `/index/admEditarSensor/${dadosSensoresADM[i].id}`%>"><button class="btn btn-primary mx-3 text-white">Edit</button></a></td>
+													<td><a href="<%= `/index/sensors/${dadosSensoresADM[i].id}/edit_view?channelId=${channelId}`%>"><button class="btn btn-primary mx-3 text-white">Editar</button></a></td>
                                                         
-                                                        <form method="post" action="<%= `/index/admDeletarSensor/${dadosSensoresADM[i].id}`%>">
+
+													<td><a href="<%= `/api/sensors/delet/${dadosSensoresADM[i].id}?channelId=${channelId}`%>"><button class="btn btn-primary mx-3 text-white">Deletar</button></a></td>
+													<!--
+                                                        <form method="get" action="<%= `/api/sensors/delet/${dadosSensoresADM[i].id}?channelId=${channelId}`%>">
 
                                                             <td><button class="btn btn-danger mx-3 text-white">Delete</button></td>                                                        
 
-                                                        </form>
+                                                        </form> -->
 												</tr>
 
 												<%}%>
 
 										</tbody>
 									</table>
-									<a href="http://localhost:3000/index/adm/sensor">
+										<a href="<%- `/index/sensor/create/${channelId}` %>"">
 										<button class="btn btn-primary mt-3 mb-2 mx-2 text-white">
 											Criar Sensor
 										</button>
@@ -162,15 +165,13 @@
 			</div><!--//container-fluid-->
 		</div><!--//app-content-->
 
-		<footer class="app-footer">
-			<div class="container text-center py-3">
-				<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-				<small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
-						style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-						target="_blank">Xiaoying Riley</a> for developers</small>
-
-			</div>
-		</footer><!--//app-footer-->
+		<footer class="app-footer fixed-bottom">
+	    <div class="container text-center py-3">
+	         <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+        <small class="copyright">Design por <i class="fas fa-heart" style="color: #fb866a;"></i> <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a></small>
+	       
+	    </div>
+    </footer><!--//app-footer-->
 
 	</div><!--//app-wrapper-->
 

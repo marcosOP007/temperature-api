@@ -8,6 +8,19 @@ const Sensor  = require('../models/Sensor');
 
 const router = Router();
 
+
+router.get('/delet/:id', permissionCheck.verifyUserPermission('ADMIN','MODERATOR'), async (req,res) => {
+    try {
+        const channelId = req.params.id;
+        await ChannelController.deleteChannel(channelId)
+        res.status(204).redirect('/index/'+ req.user_id);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao excluir canal.' });
+    }
+});
+
+
 // Rota para listar todos os canais
 router.get('/',permissionCheck.verifyUserPermission("ADMIN"), async (req, res) => {
     try {

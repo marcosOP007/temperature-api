@@ -113,7 +113,7 @@ router.post('/register', async (req, res, next) => {
       const passwordHash = await bcrypt.hash(password, salt);
 
 
-      User.create({name, email, hash_password: passwordHash, permission_type: 'USER'})
+      User.create({name, email, hash_password: passwordHash, permission_type: 'MODERATOR'})
 
       return res.redirect('/index/login');
   }catch(error){

@@ -1,16 +1,19 @@
 module.exports = {
     dialect: 'postgres',
     protocol: 'postgres',
-    host: process.env.DB_HOST,
+    host: 'isabelle.db.elephantsql.com',
     port: 5432,
-    username: process.env.DB_USER,
-    password: process.env.DB_SECRET,
-    database: process.env.DB_USER,
-    dialectOptions: {
-        ssl: {
+    username: 'vqsexyea',
+    //password: process.env.DB_SECRET,
+    database: 'vqsexyea',
+    password: "LTAt36KafrnaMldQlFCbGhcRtZTb3uJg",
+    dialectoptions: {
+        ssl: true,
+        native:true,
+        /*   ssl: {
             require: true,
             rejectUnauthorized: false
-        }
+        }*/
     },
     define: {
         timestamps: true,

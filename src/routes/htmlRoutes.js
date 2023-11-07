@@ -37,13 +37,27 @@ router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERA
     if(!channel){
         return res.send("canal não existe")
     }
-    console.log(channel)
     res.render(path.join(__dirname, '../views/html/moderator/adm-editchannel.ejs'), {
-        dadosSensoresADM: channel,
+        dadosSensoresADM: channel.Sensores,
+        channelId: req.params.id,
         userId: req.query.id,
     });
 })
 
+
+router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async (req, res) => {
+
+    try{
+        user = UserController.getUserById(req.user_id)
+        if(user.permission_type == "ADMIN"){
+            return res.redirect('/index/adm/')
+        }
+        res.render(path.join(__dirname, '../views/html/moderator/edit_sensor.ejs'), {channelId: req.query.channelId,userId: req.user_id, dadoSensor: await SensorController.getSensorById(req.params.id)});
+    }catch(err){
+        console.log(err)
+    }
+    
+})
 
 
 router.get('/sensors/:id', AuthMiddle, async (req, res) => {
@@ -66,25 +80,17 @@ router.get('/adm/sensor', AuthorizationMiddle, async (req, res) => {
     res.render(path.join(parentDir, '/viewsOfficial/criarSensor.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 
 })
 
+router.get('/sensor/create/:id', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {
+    res.render(path.join(__dirname, '../views/html/moderator/createSensor.ejs'), {channelId: req.params.id,userId: req.user_id}) 
+})
+
+
 
 router.get('/channel/create', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {
     res.render(path.join(__dirname, '../views/html/moderator/createChannel.ejs'), {userId: req.user_id}) 
 })
 
 
-router.get('/adm/canal', AuthorizationMiddle, async (req, res) => {
-    const parentDir = path.join(__dirname, '..')
-    res.render(path.join(parentDir, '/viewsOfficial/criarCanal.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 
-})
-
-router.get('/adm/logTemp', AuthorizationMiddle ,async (req, res) => {
-    const parentDir = path.join(__dirname, '..')
-    res.render(path.join(parentDir, '/viewsOfficial/logTemp.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 
-})
-
-router.get('/adm/', AuthorizationMiddle, async(req, res) => {
-    res.render(path.join(__dirname, '../viewsOfficial/indexADM.ejs'), {dadosADM: await ChannelController.getAllChannels(), userId: req.params.id});
-})
 
 router.get('/channel/edit/:id', AuthorizationMiddle, async(req, res) => {
     res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
