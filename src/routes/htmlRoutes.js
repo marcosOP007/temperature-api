@@ -61,23 +61,17 @@ router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODER
 
 
 router.get('/sensors/:id', AuthMiddle, async (req, res) => {
-    const parentDir = path.join(__dirname, '..'); 
 
     try{
         user = UserController.getUserById(req.user_id)
         if(user.permission_type == "ADMIN"){
             return res.redirect('/index/adm/')
         }
-        res.render(path.join(parentDir, '/viewsOfficial/charts.ejs'), {dadosSensores: await ChannelController.getAllSensors(req.params.id)});
+        res.render(path.join(__dirname, '../views/html/user/charts.ejs'), {dadosSensores: await ChannelController.getAllSensors(req.params.id)});
     }catch(err){
         console.log(err)
     }
     
-})
-
-router.get('/adm/sensor', AuthorizationMiddle, async (req, res) => {
-    const parentDir = path.join(__dirname, '..')
-    res.render(path.join(parentDir, '/viewsOfficial/criarSensor.ejs'), /*{'COLOCAR AQUI OS DADOS QUE DESEJA ENVIAR'}*/) 
 })
 
 router.get('/sensor/create/:id', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {

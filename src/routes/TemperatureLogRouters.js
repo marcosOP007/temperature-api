@@ -56,9 +56,9 @@ router.post('/temperature-logs', async (req, res) => {
                 counter++;
             }
         }
-        if( counter < sensorSize){
+        if( counter <= sensorSize){
             for(var i = sensorSize-counter; i < sensorSize; i++){
-                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[i-1].id, temperature: 273});
+                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[i].id, temperature: -273});
             }        
         }
 

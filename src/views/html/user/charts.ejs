@@ -60,15 +60,15 @@
 		    </div><!--//container-fluid-->
 			
 	    </div><!--//app-content-->
-	        
-    <footer class="app-footer fixed-bottom">
-	    <div class="container text-center py-3">
-	         <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-        <small class="copyright">Design por <i class="fas fa-heart" style="color: #fb866a;"></i> <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a></small>
-	       
-	    </div>
-    </footer><!--//app-footer-->
-
+	    
+	    <footer class="app-footer fixed-bottom">
+			<div class="container text-center py-3">
+				 <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+			<small class="copyright">Design por  <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a></small>
+			   
+			</div>
+		</footer><!--//app-footer-->
+	    
     </div><!--//app-wrapper-->    					
 
  
@@ -84,144 +84,106 @@
     <script src="/assets/js/app.js"></script> 
 
 	<script>
-	var teste = JSON.parse('<%-JSON.stringify(dadosSensores)%>')
+		const sensorData = JSON.parse('<%-JSON.stringify(dadosSensores)%>');
+	
+		async function createChart(sensor) {
+			const chartContainer = document.createElement('canvas');
+			chartContainer.setAttribute("id", `chart-line-${sensor.id}`);
+			document.getElementById(`chart-container-${sensor.id}`).appendChild(chartContainer);
+	
+			const ctx = document.getElementById(`chart-line-${sensor.id}`);
 
-	async function createChartInHTML(sensorid) {
-		const divChart = document.createElement('canvas');
-		divChart.setAttribute("id", `chart-line-${sensorid}`);
-		const divChartHTML = document.getElementById(`chart-container-${sensorid}`);
-		divChartHTML.appendChild(divChart);
-	}
+			const dataSensor = await getLogDetails(sensor.id);
+			const chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dataSensor[1],
+					datasets: [{
+						tension: 0.3,
+						fill: 'origin',
+						label: 'Temperatura °C',
+						borderColor: '#04A0A5',
+						hitRadius: 200,
+						backgroundColor: (context) => {
+							//const data = context.dataset.data;
+							
+							if (!context.chart.chartArea) {
+								return;
+							}
+							const {ctx, data, chartArea: {top, bottom} } = context.chart;
+							
 
-	async function updateChart(sensor_id, chart) {
-		var getDetails = await getLogDetails(sensor_id);
-		for (i = chart.data.datasets[0].data.length; i < getDetails[0].length; i++) {
-			addData(getDetails[0][i], getDetails[1][i], chart)
-		}
-	}
+							const maxTemp = Math.max(...(data.datasets[0].data));
+							const minTemp = Math.max(Math.min(...(data.datasets[0].data)), 0);
+							const tempRange = maxTemp - minTemp;
+							console.log("temperatura "+ maxTemp+" "+ minTemp);
+							const gradientBg = ctx.createLinearGradient(0, top, 0, bottom);
+
+							// Defina suas cores e limites de temperatura aqui
+							const colorStops = [
+								{temp: 50, color: '#fa501d'},  // vermelho para temperaturas muito quentes
+								{temp: 35, color: '#fabf3d'}, // amarelo para temperaturas quentes
+								{temp: 20, color: '#fff4c7'}, // branco para temperaturas moderadas
+								{temp: 0, color: '#8adafa'}  // azul para temperaturas frias
+							];
+
+							colorStops.forEach((stop, index) => {
+								// Normalizar a temperatura para um valor entre 0 e 1
+
+								const stopValue = (stop.temp -  minTemp) / tempRange;
+								gradientBg.addColorStop(stopValue, stop.color);
+							});
+
+							return gradientBg;
+						},
 
 
-	function addData(temp, hor_temp, chart) {
-		let sizeData = chart.data.datasets[0].data.length
-		chart.data.datasets[0].data[sizeData] = temp
-		chart.data.labels[sizeData] = `${(hor_temp)}`
-		chart.update()
-	}
 
-
-	async function createGráficoTeste(id) {
-		
-
-		const ctx = document.getElementById(`chart-line-${id}`);
-		let chart = new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: await (getLogDetails(id))[1],
-				datasets: [{
-					tension: 0.3,
-					fill: 'origin',
-					label: 'Temperatura °C',
-					borderColor: '#04A0A5',
-					hitRadius: 200,
-					backgroundColor: (context) => {
-						const bgColor = [
-							'#fa501d',
-							'#fff4c7',
-							'#fabf3d',
-							'#8adafa'
-					];
-						if(!context.chart.chartArea){
-							return;
-						}
-						console.log(context.chart.chartArea)
-						const {ctx, data, chartArea: {top, bottom} } = context.chart;
-						const gradientBg = ctx.createLinearGradient(0, top, 0, bottom);
-						gradientBg.addColorStop(0, bgColor[0])
-						gradientBg.addColorStop(0.75, bgColor[2])
-						gradientBg.addColorStop(0.95, bgColor[1])
-						gradientBg.addColorStop(1, bgColor[3])
-						return gradientBg
-					},
-
-					data: await (getLogDetails(id))[0],
-					borderWidth: 4
-				}]
-			},
-			options: {
-				responsive: true,
-				scales: {
-					y: {
-						beginAtZero: false
-					}
+						data: dataSensor[0],
+						borderWidth: 4
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: { y: { beginAtZero: false } }
 				}
-			}
+			});
+	
+			setInterval(() => updateChart(sensor.id, chart),10000);
+		}
 			
-		});
-		updateChart(id, chart);
-		setInterval(updateChart, 5000, id, chart);
-	}
-
-
-
-	async function loadChannelDetails() {
-		const sensor = teste;
-		sensor.forEach(sensor => {
-			//getLogDetails(sensor.id);
-			createChartInHTML(sensor.id)
-			createGráficoTeste(sensor.id)
-		});
-
-	}
-
-
-	function extractTime(dateTime) {
-		const timeComponents = dateTime.split("T")[1].split(":");
-		const hours = timeComponents[0];
-		const minutes = timeComponents[1];
-		const seconds = timeComponents[2].split(".")[0];
-
-
-		return `${hours}:${minutes}:${seconds}`;
-	}
-	function extractDateTimeComponents(dateTime) {
-		const [datePart, timePart] = dateTime.split("T");
-		const dateComponents = datePart.split("-");
-		const year = dateComponents[0];
-		const month = dateComponents[1];
-		const day = dateComponents[2];
-
-		const timeComponents = timePart.split(":");
-		const hours = timeComponents[0];
-		const minutes = timeComponents[1];
-		const seconds = timeComponents[2].split(".")[0];
-
-		const dataNow = new Date();
-		if (dataNow.getFullYear() != year) return `${day}/${month}/${year}`;
-		else if (dataNow.getMonth() != month) return `${day}/${month} - ${hours}:${minutes}`;
-		else if (dataNow.getDate() != day) return `${day}/${month} - ${hours}:${minutes}`;
-		else return `${hours}:${minutes}:${seconds}`;
-
-	}
-
-
-
-	async function getLogDetails(id) {
-		const response2 = await fetch(`http://localhost:3000/api/sensors/${id}/temperature-logs`);
-		const logs = await response2.json();
-		var teste = [];
-		var teste2 = [];
-		var i = 0
-
-		logs.forEach(log => {
-			teste.push(log.temperature);
-			teste2.push(`${extractDateTimeComponents(log.createdAt)}`)
-			console.log(log)
-		});
-		return [teste, teste2];
-	}
-
-	loadChannelDetails();
-</script>
+	
+		async function updateChart(sensor_id, chart) {
+			const [data, labels] = await getLogDetails(sensor_id);
+			chart.data.datasets[0].data = data;
+			chart.data.labels = labels;
+			chart.update();
+		}
+	
+		async function getLogDetails(id) {
+			const response = await fetch(`http://localhost:3000/api/sensors/${id}/temperature-logs`);
+			const logs = await response.json();
+			return [
+				logs.map(log => log.temperature),
+				logs.map(log => extractDateTimeComponents(log.created_at))
+			];
+		}
+	
+		function extractDateTimeComponents(dateTime) {
+			const [datePart, timePart] = dateTime.split("T");
+			const [year, month, day] = datePart.split("-");
+			const [hours, minutes] = timePart.split(":");
+			
+			const now = new Date();
+			if (now.getFullYear() != year) return `${day}/${month}/${year}`;
+			else if (now.getMonth() != month) return `${day}/${month} - ${hours}:${minutes}`;
+			else if (now.getDate() != day) return `${day}/${month} - ${hours}:${minutes}`;
+			else return `${hours}:${minutes}:${seconds}`;
+		}
+	
+		sensorData.forEach(createChart);
+	</script>
+	
 
 </body>
 </html> 

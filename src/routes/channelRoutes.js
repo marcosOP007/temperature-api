@@ -3,8 +3,7 @@ const ChannelController = require('../Controller/ChannelController')
 const UserController = require('../Controller/UserController')
 const permissionCheck = require('../MiddleWares/permissionCheck');
 const RandomToken = require('../Utils/Random')
-const Channel = require('../models/Channel'); 
-const Sensor  = require('../models/Sensor');
+
 
 const router = Router();
 
