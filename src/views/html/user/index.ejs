@@ -97,7 +97,7 @@
 														</a>
 													</td>
 													<td>
-														<a href="<%= `/api/channels/deleteUser/${dados[i].id}/${userID}`%>">
+														<a href="<%= `/api/channels/u/${dados[i].id}`%>">
 															<button class="btn btn-danger">Delete</button>
 														</a>
 													</td>
@@ -117,7 +117,7 @@
 																							<li><a class="dropdown-item" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 													<path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
 													</svg>Edit</a></li>
-																							<li><a   class="dropdown-item"  onclick="temp(<%- `${dados[i].id}  ,'${ dados[i].token_read}'` %>)" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+																							<li><a   class="dropdown-item"  onclick="fetchTemperatureLogs(<%- `${dados[i].id}  ,'${ dados[i].token_read}'` %>)" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 													<path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
 													<path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
 													</svg>Download</a></li>
@@ -184,199 +184,63 @@
 
 
 	<!-- Javascript -->
-	<script> 
-
-		
-		
-
-		function convertChartDataToCSV(args) {
-			let result, columnDelimiter, lineDelimiter, data;
-
-			data = args.data || null;
-			if (data == null || !data.length) {
-				return null;
-			}
-
-
-			columnDelimiter = args.columnDelimiter || ',';
-			lineDelimiter = args.lineDelimiter || '\n';
-
-			/*
-			result = '' + columnDelimiter; 
-			result += labels.join(columnDelimiter);
-			result += lineDelimiter;
-
-			result += args.data.label.toString();
-			*/
-			for (let i = 0; i < data[0].length; i++) {
-				
-			}
-			for (let i = 0; i < data.length; i++) {
-				result += columnDelimiter;
-				result += data[i];
-			}
-			result += lineDelimiter;
-
-			return result;
-		}
-
-		function downloadCSV(args) {
-			console.log(args.logs[0][0].temperature)
-			var filename, link;
-			var csv = "";
-			
-			labels = ["created_at","entry_id"]
-			csv += labels.join(',');
-
-			for(  i = 0; i < args.data.Sensores.length; i++){
-				csv += ','
-				csv += `field${i+1}`
-			}
-			csv += '\n'
-
-			for( i = 0; i < args.logs[0].length; i++){
-				csv += args.logs[0][i].createdAt
-				csv += ',' + (i+1)
-				for ( j = 0; j < args.data.Sensores.length; j++) {
-					
-					csv += ',' + args.logs[j][i].temperature
-					
+	<script>
+		async function fetchTemperatureLogs(channelId) {
+			try {
+				const response = await fetch(`/api/channels/${channelId}`);
+				if (!response.ok) {
+					throw new Error(`Erro ao buscar dados do canal: ${response.statusText}`);
 				}
-				csv += '\n'
+	
+				const channelData = await response.json();
+				console.log(`Dados do canal ${channelId}:`, channelData);
+	
+				if (channelData.Sensores && channelData.Sensores.length > 0) {
+					console.log('Sensores do canal:');
+					const data_logs = await Promise.all(channelData.Sensores.map(sensor => fetch(`/api/sensors/${sensor.id}/temperature-logs`).then(res => res.json())));
+	
+					downloadCSV({data: channelData, logs: data_logs});
+				} else {
+					console.log('Nenhum sensor encontrado para este canal.');
+				}
+			} catch (error) {
+				console.error('Erro ao buscar dados do canal:', error);
 			}
-
-			
+		}
+	
+		function convertChartDataToCSV(args) {
+			const columnDelimiter = args.columnDelimiter || ',';
+			const lineDelimiter = args.lineDelimiter || '\n';
+			const labels = ["created_at", "entry_id", ...args.data.Sensores.map((_, i) => `field${i+1}`)];
+			let csv = labels.join(columnDelimiter) + lineDelimiter;
+	
+			args.logs[0].forEach((log, i) => {
+				csv += log.created_at + columnDelimiter + (i+1);
+				args.logs.forEach(log => {
+					csv += columnDelimiter + log[i].temperature;
+				});
+				csv += lineDelimiter;
+			});
+	
+			return csv;
+		}
+	
+		function downloadCSV(args) {
+			let csv = convertChartDataToCSV(args);
 			if (csv == null) return;
-			console.log(csv);
-
-			filename = args.filename || 'data.csv';
-			if (!csv.match(/^data:text\/csv/i)) {
-				csv = 'data:text/csv;charset=utf-8,' + csv;
-			}
-
-			// not sure if anything below this comment works
-			data = encodeURI(csv);
-			link = document.createElement('a');
+	
+			const filename = args.filename || 'data.csv';
+			csv = 'data:text/csv;charset=utf-8,' + csv;
+			const data = encodeURI(csv);
+			const link = document.createElement('a');
 			link.setAttribute('href', data);
 			link.setAttribute('download', filename);
-			document.body.appendChild(link); // Required for FF
+			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
 		}
-
-
-
-
-		async function temp(channelId , content){
-			try {
-				const response = await fetch(`/api/channels/${channelId}`); // Substitua pela URL correta
-					if (!response.ok) {
-						throw new Error(`Erro ao buscar dados do canal: ${response.statusText}`);
-					}
-
-
-
-					
-
-					const channelData = await response.json();
-					console.log(`Dados do canal ${channelId}:`, channelData);
-					
-					let data_logs = []
-
-					if (channelData.Sensores && channelData.Sensores.length > 0) {
-						console.log('Sensores do canal:');
-						
-						for (const sensor of channelData.Sensores) {
-							data_logs.push( await ((await fetch(`/api/sensors/${channelData.Sensores[0].id}/temperature-logs`)).json()))
-							
-						}
-
-						downloadCSV({data: channelData, logs: data_logs})
-					} else {
-						console.log('Nenhum sensor encontrado para este canal.');
-					}
-					
-				} catch (error) {
-					console.error('Erro ao buscar dados do canal:', error);
-				}
-		}
-		
-		function showl(){
-			const dataLabels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July'];
-const data = {
-  labels: dataLabels,
-  datasets: [{
-      label: 'Dataset 1',
-      data: [65, 59, 80, 81, 56, 55, 40],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 205, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(201, 203, 207, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)',
-        'rgb(255, 159, 64)',
-        'rgb(255, 205, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(54, 162, 235)',
-        'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
-      ],
-      borderWidth: 1
-    },
-    {
-      label: 'Dataset 2',
-      data: [55, 69, 70, 61, 66, 45, 50],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 205, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(201, 203, 207, 0.2)'
-      ],
-      borderColor: [
-        'rgb(255, 99, 132)',
-        'rgb(255, 159, 64)',
-        'rgb(255, 205, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(54, 162, 235)',
-        'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
-      ],
-      borderWidth: 1
-    }
-  ]
-};
-
-const config = {
-  type: 'bar',
-  data: data,
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  },
-};
-
-var chart = new Chart(document.getElementById('chartContainer'), config);
-
-
-  downloadCSV({
-    filename: "chart-data.csv",
-    chart: chart
-  })
-
-
-		}
 	</script>
+	
 	<script src="/assets/plugins/popper.min.js"></script>
 	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

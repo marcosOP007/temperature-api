@@ -86,8 +86,8 @@ router.get('/channel/create', permissionCheck.verifyUserPermission('MODERATOR'),
 
 
 
-router.get('/channel/edit/:id', AuthorizationMiddle, async(req, res) => {
-    res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
+router.get('/channel/edit/:id', permissionCheck.verifyUserPermission('MODERATOR'), async(req, res) => {
+    res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {userId: req.user_id,dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
 })
 
 
@@ -99,11 +99,11 @@ router.post('/deletarSensorClient/:id', AuthMiddle, async(req, res) => {
 
 
 
-router.get('/sensor/edit/:id', AuthorizationMiddle, async(req, res) => {
-    res.render(path.join(__dirname, '../views/html/moderator/edit_sensor.ejs'), {dadoSensor: await SensorController.getSensorById(req.params.id)})
+router.get('/sensor/edit/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async(req, res) => {
+    res.render(path.join(__dirname, '../views/html/moderator/edit_sensor.ejs'), {userId: req.user_id,dadoSensor: await SensorController.getSensorById(req.params.id)})
 })
 
-router.post('/admDeletarSensor/:id', AuthorizationMiddle, async(sensorId) => {
+router.post('/admDeletarSensor/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async(sensorId) => {
     const idDelete = sensorId.params.id
     console.log("recebido")
     await SensorController.deleteSensor(idDelete);
@@ -126,7 +126,7 @@ router.get('/:id', AuthMiddle, Authcation, async (req, res) => {
         if (userPermission === 'USER') {
             const data = await UserController.getAllChannelsByUser(userId);
 
-            res.render(path.join(__dirname, '../views/html/user/index.ejs'), { dados: data,   userID: userId });
+            res.render(path.join(__dirname, '../views/html/user/index.ejs'), { dados: data, userId:userId,  userID: userId });
         } else if (userPermission === 'MODERATOR') {
             res.render(path.join(__dirname, '../views/html/moderator/index.ejs'), {
                 dados: await ChannelController.getAllChannelByModerator(userId),
@@ -159,9 +159,9 @@ router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission(
         dados: channels,
         permision: 'ADMIN',
         userID:req.params.id,
+        userId:req.user_id
     });
 });
-
 
 router.get('/v/not-autorized', async(req, res)=> {
 

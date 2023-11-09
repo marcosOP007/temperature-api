@@ -45,11 +45,10 @@ router.post('/',permissionCheck.verifyUserPermission('MODERATOR'), async (req, r
 
 
 // Rota para excluir um canal pelo ID (USER)
-router.delete('/u/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"), async (req, res) => {
+router.get('/u/:id',permissionCheck.verifyUserPermission("USER"), async (req, res) => {
     try {
-        const channelId = req.params.id;
-        await ChannelController.deleteChannel(channelId)
-        res.status(204).send();
+        await UserController.deletChannelByuser(req.user_id, req.params.id)
+        res.status(204).redirect('/index/'+req.user_id);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao excluir canal.' });

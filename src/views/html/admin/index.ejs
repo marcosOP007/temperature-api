@@ -91,9 +91,10 @@
 													<td><%-dados[i].createdAt%></td>
 													<td>    
 														<div class="form-check form-switch">
-															<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+														  <input data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
 														</div>
 													</td>
+													  
 													<td>
 														<!-- Botão para visualizar canais -->
 														
@@ -149,6 +150,36 @@
 		
 
 	</div><!--//app-wrapper-->
+
+
+	<script>
+		document.querySelectorAll(".form-check-input").forEach(function(checkbox) {
+		  checkbox.addEventListener('change', function() {
+			var isChecked = this.checked;
+			var state = isChecked ? "ACTIVE" : "INACTIVE";
+			var moderatorId = this.getAttribute('data-id');
+		
+			// Enviar uma requisição POST quando o estado do checkbox muda
+			fetch('/auth/inv-status/'+moderatorId, {
+			  method: 'POST',
+			  headers: {
+				'Content-Type': 'application/json',
+			  },
+			  body: JSON.stringify({ state: state}),
+			})
+			.then(response => response.json())
+			.then(data => {
+			  console.log('Sucesso:', data);
+			})
+			.catch((error) => {
+			  console.error('Erro:', error);
+			});
+		  });
+		});
+		</script>
+		
+
+
 
 
 	<!-- Javascript -->
