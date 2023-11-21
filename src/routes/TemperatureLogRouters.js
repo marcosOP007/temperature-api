@@ -52,7 +52,7 @@ router.post('/temperature-logs', async (req, res) => {
 
             if(key === 'campo'+counter){
                 console.log("sensor " + counter + " identificado")
-                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[counter-1].id, temperature: req.query[key]+(channel.Sensores[counter-1].corretion_temperature ?  channel.Sensores[counter-1].corretion : 0)});
+                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[counter-1].id, temperature: req.query[key]+(channel.Sensores[counter-1].corretion_temperature ?  channel.Sensores[counter-1].corretion  : 0)});
                 counter++;
             }
         }

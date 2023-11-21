@@ -161,7 +161,7 @@
 		}
 	
 		async function getLogDetails(id) {
-			const response = await fetch(`http://localhost:3000/api/sensors/${id}/temperature-logs`);
+			const response = await fetch(`/api/sensors/${id}/temperature-logs`);
 			const logs = await response.json();
 			return [
 				logs.map(log => log.temperature),
