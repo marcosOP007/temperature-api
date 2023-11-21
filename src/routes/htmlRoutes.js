@@ -32,7 +32,7 @@ router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERA
     channel = await ChannelController.getChannelById(req.params.id);
     
     if(!channel){
-        return res.send("canal não existe")
+        return res.send("canal não existe ")
     }
     res.render(path.join(__dirname, '../views/html/moderator/adm-editchannel.ejs'), {
         dadosSensoresADM: channel.Sensores,
@@ -108,7 +108,7 @@ router.post('/admDeletarSensor/:id', permissionCheck.verifyUserPermission('MODER
 
 router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERATOR'),AuthMiddle, Authcation,permissionCheck.verifyStatus(), async (req, res) => {
     if(isNaN(req.params.id)) return;
-    try {
+    try { 
         const userId = req.params.id;
         const user = await UserController.getUserById(userId);
         //console.log("=======================================================" , user)
