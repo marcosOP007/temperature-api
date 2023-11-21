@@ -17,7 +17,7 @@
 	<div class="app-wrapper">
 		<div class="app-content pt-3 p-md-3 p-lg-4">
 			<div class="container-xl">
-				<form id="form_send" action="/api/sensors/edit/<%= dadoSensor.id%>" method="post" >
+				<form id="form_send"  method="post" >
 					<div class="mb-4">
 						<label for="idSensor" class="form-label">ID do Sensor</label>
 						<input class="form-control" type="text" value="<%=dadoSensor.id%>" aria-label="" readonly>
@@ -33,22 +33,22 @@
 					  <div class="mb-3">
 						<%if (dadoSensor.corretion_temperature != false){%>
 						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckChecked" checked onclick="toggleCorrectionField()"> 
-						<label  class="form-check-label" for="flexCheckChecked">Correção de Temperatura</label>
+						<label  class="form-check-label" >Correção de Temperatura</label>
 						<%} else {%>
-						<input name="corretion_temperature" type="checkbox" class="form-check-input" id="flexCheckDefault" onclick="toggleCorrectionField()"> 
-						<label  class="form-check-label" for="flexCheckDefault">Correção de Temperatura</label>
+						<input name="corretion_temperature"  type="checkbox" class="form-check-input" id="flexCheckChecked" checked onclick="toggleCorrectionField()"> 
+						<label  class="form-check-label" >Correção de Temperatura</label>
 							<%}%>
 					  </div>
 					  <div class="mb-3" id="correctionField" <% if(dadoSensor.corretion_temperature == false){ %> style="display: none; <% }%>">
 						<label for="correctionValue" class="form-label">Valor de Correção</label>
-						<input name="corretionValue" id="corretionValue" type="number" class="form-control" >
+						<input name="corretionValue" id="corretionValue" value="<%-dadoSensor.corretion%>" type="number" class="form-control" >
 					  </div>
 					  <div class="mb-3">
 						<label class="form-check-label" for="status">Status</label>
 
-						<%if (dadoSensor.status != false) {%>
+						<%if (dadoSensor.status ==  'ACTIVE') {%>
 						<div class="form-check">
-							<input name="status" class="form-check-input" type="radio"id="flexRadioDefault2" checked>
+							<input name="status" class="form-check-input" type="radio"id="flexRadioDefault3" checked>
 							<label class="form-check-label" for="flexRadioDefault2">Ativo</label>
 						</div>
 						<div class="form-check">
@@ -58,7 +58,7 @@
 
 						<%}else{%>
 							<div class="form-check">
-								<input name="status" class="form-check-input" type="radio" id="flexRadioDefault2" >
+								<input name="status" class="form-check-input" type="radio" id="flexRadioDefault3" >
 								<label class="form-check-label" for="flexRadioDefault2">Ativo</label>
 							</div>
 						<div class="form-check">
@@ -103,8 +103,39 @@
 				text.style.display = "none";
 			}
 		}
-
+		toggleCorrectionField() 
 	
+		document.getElementById('form_send').addEventListener('submit', function(event) {
+			event.preventDefault();
+
+			let url = "/api/sensors/edit/<%= dadoSensor.id%>";
+			let data = {
+				name: document.getElementById('name').value,
+				location: document.getElementById('location').value,
+				corretion_temperature: document.getElementById('flexCheckChecked').checked,
+				correction_value: document.getElementById('corretionValue').value,
+				status: document.getElementById('flexRadioDefault3').checked
+			};
+			console.log(document.getElementById('flexCheckChecked').checked)
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					alert('Atualização bem sucedida!');
+				} else {
+					alert('Atualização mal sucedida!');
+				}
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+		});
 
 
 	</script>

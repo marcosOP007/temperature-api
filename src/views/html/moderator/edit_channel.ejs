@@ -9,8 +9,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
-	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+	<meta name="description" content="Pagina de Editar">
+
 	<link rel="shortcut icon" href="favicon.ico">
 
 	<!-- FontAwesome JS-->
@@ -31,16 +31,18 @@
 				<form id="createChannelForm">
 					<div class="mb-3">
 						<label for="channelName" class="form-label">Nome</label>
-						<input type="text" class="form-control" id="channelName" required>
+						<input type="text" class="form-control" id="channelName"  value="<%-channel.name%>" required>
 					</div>
 					
 
 					<div class="mb-3">
 						<label for="channelDescription" class="form-label">Descrição</label>
-						<input type="text" class="form-control" id="channelDescription">
+						<input type="text" class="form-control" value="<%-channel.description%>" id="channelDescription">
 					</div>
-					<button type="button" class="btn btn-primary text-white" id = "updateB">tualizar</button>
-					<button type="button" class="btn btn-danger text-white" id="delB">Deletar</button>
+					<button type="button" class="btn btn-primary text-white" onclick="update(<%-channel.id%>)">Atualizar</button>
+				     <a href="/index/channel/<%- channel.id %>/edit_view">
+						<button type="button" class="btn btn-info text-white" >	Sensores </button>
+					 </a>	
 				</form>
 			</div>
 		</div>
@@ -69,6 +71,7 @@
 	<!-- Page Specific JS -->
 	<script src="/assets/js/app.js"></script>
 	<script src="/js/moderator/main_e.js"></script>
+
 	</body>
 
 </html>

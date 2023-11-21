@@ -55,17 +55,10 @@ async function deleteChannel(channelId) {
     });
 
     if (!deleted) throw new Error('Canal não encontrado.');
-    return { message: 'Canal excluído com sucesso.' };
+    return deleted;
 }
 
-// Função para excluir um canal pelo ID (ADM)
-async function deleteChannelADM(channelId) {
-    const deleted = await Channel.destroy({
-        where: { id: channelId },
-    });
 
-    if (!deleted) throw new Error('Canal não encontrado.');
-}
 
 // Função para adicionar sensor a um canal
 async function addSensorToChannel(channelId, sensorId) {
@@ -106,7 +99,6 @@ module.exports = {
     getChannelById,
     updateChannel,
     deleteChannel,
-    deleteChannelADM,
     addSensorToChannel,
     getAllChannelByModerator,
     getAllSensors,

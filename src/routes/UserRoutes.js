@@ -113,7 +113,7 @@ router.post('/register', async (req, res, next) => {
       const passwordHash = await bcrypt.hash(password, salt);
 
 
-      User.create({name, email, hash_password: passwordHash, permission_type: 'USER'})
+      User.create({name, email, hash_password: passwordHash, permission_type: 'MODERATOR'})
 
       return res.redirect('/index/login');
   }catch(error){
@@ -145,6 +145,8 @@ router.post('/inv-status/:id', permissionCheck.verifyUserPermission('ADMIN'), as
   
   try{
       await UserController.updateUser(req.params.id,{status: req.body.state})
+
+      res.status(200).json({msg: 'sucesso na requisição'})
   }catch(error){
       console.log("Erro ao deletar moderador: ", error);
       

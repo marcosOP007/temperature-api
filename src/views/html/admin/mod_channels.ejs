@@ -28,19 +28,20 @@
 
 				<div class="row g-3 mb-4 align-items-center justify-content-between">
 					<div class="col-auto">
-						<h1 class="app-page-title mb-0">Canais</h1>
+    
+						<h1 class="app-page-title mb-0">Canais do moderador <%- modName %></h1>
 					</div>
 					<div class="col-auto">
 						<div class="page-utilities">
 							<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
 								<div class="col-auto">
 
-										<form class="table-search-form row gx-1 align-items-center">
+									<form class="table-search-form row gx-1 align-items-center">
 					                    <div class="col-auto">
-					                        <input type="text" onkeyup="findChannels()" id="search-orders" name="searchorders" class="form-control search-orders" placeholder="Procurar">
+					                        <input type="text" onkeyup="findChannels()" id="search-orders" name="searchorders" class="form-control search-orders" placeholder="Nome, ID, Chave">
 					                    </div>
 					                    <div class="col-auto">
-					                        <button onclick="findChannels()" type="submit" class="btn app-btn-secondary">Procurar</button>
+					                        <button onclick="findChannels()"  class="btn app-btn-secondary">Procurar</button>
 					                    </div>
 					                </form> 
 
@@ -78,16 +79,6 @@
 													<td><%-dados[i].createdAt%></td>
 													<td><%-dados[i].updatedAt%></td>
 													<td><%-dados[i].token_read%></td>
-													<td>
-														<a href="<%= `http://localhost:3000/index/sensors/${dados[i].id}`%>">
-															<button class="btn btn-primary text-white">Gráfico</button>
-														</a>
-													</td>
-													<td>
-														<a href="<%= `/api/channels/u/${dados[i].id}`%>">
-															<button class="btn btn-danger">Delete</button>
-														</a>
-													</td>
 													
 													<td>
 														<div class="dropdown">
@@ -97,19 +88,23 @@
 															</svg>
 																						</div><!--//dropdown-toggle-->
 																						<ul class="dropdown-menu">
-																							<li><a class="dropdown-item"   href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													<path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
-													<path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-													</svg>View</a></li>
-																							<li><a class="dropdown-item" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													<path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-													</svg>Edit</a></li>
-																							<li><a   class="dropdown-item"  onclick="fetchTemperatureLogs(<%- `${dados[i].id}  ,'${ dados[i].token_read}'` %>)" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													<path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-													<path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+																							<li><a class="dropdown-item" href="<%= `http://localhost:3000/index/sensors/${dados[i].id}`%>"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													  <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+													  <path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+													</svg>Visualizar</a></li>
+																							<li><a class="dropdown-item" href="<%= `/index/channel/edit/${dados[i].id}?modId=${modId}`%>"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													  <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+													</svg>Editar</a></li>
+																							<li><a class="dropdown-item" onclick="fetchTemperatureLogs(<%- `${dados[i].id}  ,'${ dados[i].token_read}'` %>)"href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													  <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+													  <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
 													</svg>Download</a></li>
-																							
-															</ul>
+																							<li><hr class="dropdown-divider"></li>
+																							<li><a class="dropdown-item" href="<%= `/api/channels/a/${dados[i].id}?modId=${modId}`%>"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+													  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+													</svg>Deletar</a></li>
+																						</ul>
 														</div>
 
 													</td>
@@ -121,34 +116,13 @@
 										</tbody>
 									</table>
 									                         
-									<form class="form-inline" method="post" action="<%=`/api/channels/u/${userID}/channels` %>">
-										<div class="d-flex">
-											<div class="form-group mx-sm-3 mb-2 mt-3">
-												<input  name="inputToken" class="form-control" id="inputToken" placeholder="Insira o token aqui">
-											</div>
-											<button type="submit" class="btn btn-primary mb-2 mt-3 text-white">Adicionar Canal</button>
-										</div>
-									</form>
+									
 								</div><!--//table-responsive-->
 
 							</div><!--//app-card-body-->
 						</div><!--//app-card-->
 
-						<%if (dados.length >= 8) {%>
-						 <nav class="app-pagination">
-							<ul class="pagination justify-content-center">
-								<li class="page-item disabled">
-									<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-							    </li>
-								<li class="page-item active"><a class="page-link" href="#">1</a></li>
-								<li class="page-item"><a class="page-link" href="#">2</a></li>
-								<li class="page-item"><a class="page-link" href="#">3</a></li>
-								<li class="page-item">
-								    <a class="page-link" href="#">Next</a>
-								</li>
-							</ul> 
-						</nav>
-						<%}%>
+						
 					</div><!--//tab-pane-->
 				</div><!--//tab-content-->
 
@@ -228,7 +202,7 @@
 		}
 
 		function findChannels(){
-			
+			event.preventDefault();
 			var input, filter, table, tr, td, i, txtValue;
 			input = document.getElementById("search-orders");
 			filter = input.value;
@@ -238,11 +212,15 @@
 			for (i = 0; i < tr.length; i++) {
 				td = tr[i].getElementsByTagName("td")[0];
 				td2 = tr[i].getElementsByTagName("td")[1];
+				td3 = tr[i].getElementsByTagName("td")[4];
+
 				if (td && td2) {
 				txtValue = td.textContent || td.innerText;
 				txtValue2 = td2.textContent || td2.innerText;
+				txtValue3 = td3.textContent || td3.innerText;
 
-				if (txtValue.indexOf(filter) > -1 || txtValue2.indexOf(filter) > -1) {
+
+				if (txtValue.indexOf(filter) > -1 || txtValue2.indexOf(filter) > -1 || txtValue3.indexOf(filter) > -1) {
 					tr[i].style.display = "";
 				} else {
 					tr[i].style.display = "none";

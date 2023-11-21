@@ -94,13 +94,14 @@ router.post('/edit/:id', permissionCheck.verifyUserPermission('ADMIN','MODERATOR
     try {
         const updatedSensor = await SensorController.updateSensor(req.params.id,{
             name: req.body.name,
-            corretion_temperature: (req.body.correction_value == 'on' ? true : false),
-            corretion: (req.body.correction_value == 'on' ? req.body.correctionValue : 0),
+            corretion_temperature: req.body.corretion_temperature,
+            corretion: (req.body.corretion_temperature ? req.body.correction_value : 0),
             location: req.body.location,
-            status: (req.body.status == 'on' ? 'ACTIVE' : 'INACTIVE')
+            status: (req.body.status ? 'ACTIVE' : 'INACTIVE')
         });
-        res.status(200);
+        res.status(200).json({success: true,msg:'sucesso'});
     } catch (error) {
+        console.log("erro> ",error)
         handleError(res, error);
     }
 });

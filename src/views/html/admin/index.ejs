@@ -29,7 +29,7 @@
 
 				<div class="row g-3 mb-4 align-items-center justify-content-between">
 					<div class="col-auto">
-						<h1 class="app-page-title mb-0">Canais</h1>
+						<h1 class="app-page-title mb-0">Moderadores</h1>
 					</div>
 					<div class="col-auto">
 						<div class="page-utilities">
@@ -56,11 +56,13 @@
 				<nav id="orders-table-tab"
 					class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
 					<a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab"
-						href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">Todos</a>
-					<a class="flex-sm-fill text-sm-center nav-link" id="orders-all-tab" data-bs-toggle="tab"
-						href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="false">Ativos</a>
-					<a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab"
-						href="#orders-pending" role="tab" aria-controls="orders-pending"
+						href="#orders-all" role="tab" aria-controls="orders-all" 
+						aria-selected="true">Todos</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="orders-status-tab" data-bs-toggle="tab"
+						href="#status" role="tab" aria-controls="orders-all2" 
+						aria-selected="false">Ativos</a>
+					<a class="flex-sm-fill text-sm-center nav-link" id="orders-not-status-tab" data-bs-toggle="tab"
+						href="#not_status" role="tab" aria-controls="orders-pending"
 						aria-selected="false">Não Ativos</a>
 				</nav>
 
@@ -84,24 +86,24 @@
 										<tbody>
 
 											<%for(i=0; i < dados.length; i++){%>
-												<tr>
+												<tr id="all<%-dados[i].id%>">
 													<td><%-dados[i].id%></td>
 													<td><%-dados[i].name%></td>
 													<td><%-dados[i].email%></td>
 													<td><%-dados[i].createdAt%></td>
 													<td>    
 														<div class="form-check form-switch">
-														  <input data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
+														  <input d-id="<%-dados[i].id%>" data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
 														</div>
 													</td>
 													  
 													<td>
 														<!-- Botão para visualizar canais -->
 														
-														<a href="<%= `/index/admin/moderator-channels/${dados[i].id}`%>"><button  type="button" class="btn btn-primary">Canais</button></a>
+														<a href="<%= `/index/admin/moderator-channels/${dados[i].id}`%>"><button  type="button" class="btn btn-primary text-white">Canais</button></a>
 											
 														<!-- Botão para deletar o moderador -->
-														<a  href="<%= `/auth/delet-moderator/${dados[i].id}`%>"> <button  type="button" class="btn btn-danger">Deletar</button> </a>
+														<a  href="<%= `/auth/delet-moderator/${dados[i].id}`%>"> <button  type="button" class="btn btn-danger text-white" >Deletar</button> </a>
 													</td>
 												</tr>
 											<%}%>
@@ -115,26 +117,122 @@
 
 							</div><!--//app-card-body-->
 						</div><!--//app-card-->
-						<%if (dados.length >= 8) {%>
-							<nav class="app-pagination">
-							<ul class="pagination justify-content-center">
-								<li class="page-item disabled">
-									<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-							    </li>
-								<li class="page-item active"><a class="page-link" href="#">1</a></li>
-								<li class="page-item"><a class="page-link" href="#">2</a></li>
-								<li class="page-item"><a class="page-link" href="#">3</a></li>
-								<li class="page-item">
-								    <a class="page-link" href="#">Next</a>
-								</li>
-							</ul> 
-						</nav>
-						<%}%>
+						\
 
 					</div><!--//tab-pane-->
+
+
+					<div class="tab-pane fade " id="status" role="tabpanel"
+						aria-labelledby="orders-all-tab">
+						<div class="app-card app-card-orders-table shadow-sm mb-5">
+							<div class="app-card-body">
+								<div class="table-responsive">
+									<table class="table app-table-hover mb-0 text-left">
+										<thead>
+											<tr>
+												<th class="cell">Id</th>
+												<th class="cell">Nome</th>
+												<th class="cell">Email</th>
+												<th class="cell">Data de Criação</th>	
+												<th class="cell">Status</th>
+											</tr>
+										</thead>
+										<tbody id="list-status">
+
+											<%for(i=0; i < dados.length; i++){%>
+												<% if(dados[i].status != 'ACTIVE') continue %>
+												<tr id="adm<%-dados[i].id%>">
+													<td><%-dados[i].id%></td>
+													<td><%-dados[i].name%></td>
+													<td><%-dados[i].email%></td>
+													<td><%-dados[i].createdAt%></td>
+													<td>    
+														<div class="form-check form-switch">
+														  <input md-id="<%-dados[i].id%>" data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
+														</div>
+													</td>
+													  
+													<td>
+														<!-- Botão para visualizar canais -->
+														
+														<a href="<%= `/index/admin/moderator-channels/${dados[i].id}`%>"><button  type="button" class="btn btn-primary text-white">Canais</button></a>
+											
+														<!-- Botão para deletar o moderador -->
+														<a  href="<%= `/auth/delet-moderator/${dados[i].id}`%>"> <button  type="button" class="btn btn-danger text-white">Deletar</button> </a>
+													</td>
+												</tr>
+											<%}%>
+											
+
+										</tbody>
+									</table>
+								</div><!--//table-responsive-->
+
+								
+
+							</div><!--//app-card-body-->
+						</div><!--//app-card-->
+						
+
+					</div><!--//tab-pane-->
+
+					<div class="tab-pane fade " id="not_status" role="tabpanel"
+						aria-labelledby="orders-all-tab">
+						<div class="app-card app-card-orders-table shadow-sm mb-5">
+							<div class="app-card-body">
+								<div class="table-responsive">
+									<table class="table app-table-hover mb-0 text-left">
+										<thead>
+											<tr>
+												<th class="cell">Id</th>
+												<th class="cell">Nome</th>
+												<th class="cell">Email</th>
+												<th class="cell">Data de Criação</th>	
+												<th class="cell">Status</th>
+											</tr>
+										</thead>
+										<tbody id="list-not-status">
+
+											<%for(i=0; i < dados.length; i++){%>
+												<% if(dados[i].status == 'ACTIVE') continue %>
+												<tr id="adm<%-dados[i].id%>">
+													<td><%-dados[i].id%></td>
+													<td><%-dados[i].name%></td>
+													<td><%-dados[i].email%></td>
+													<td><%-dados[i].createdAt%></td>
+													<td>    
+														<div class="form-check form-switch">
+														  <input md-id="<%-dados[i].id%>" data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
+														</div>
+													</td>
+													  
+													<td>
+														<!-- Botão para visualizar canais -->
+														
+														<a href="<%= `/index/admin/moderator-channels/${dados[i].id}`%>"><button  type="button" class="btn btn-primary  text-white">Canais</button></a>
+											
+														<!-- Botão para deletar o moderador -->
+														<a  href="<%= `/auth/delet-moderator/${dados[i].id}`%>"> <button  type="button" class="btn btn-danger text-white">Deletar</button> </a>
+													</td>
+												</tr>
+											<%}%>
+											
+
+										</tbody>
+									</table>
+								</div><!--//table-responsive-->
+
+								
+
+							</div><!--//app-card-body-->
+						</div><!--//app-card-->
+						
+
+					</div><!--//tab-pane-->
+
 				</div><!--//tab-content-->
 
-
+				
 
 			</div><!--//container-fluid-->
 		</div><!--//app-content-->
@@ -169,11 +267,20 @@
 			})
 			.then(response => response.json())
 			.then(data => {
-			  console.log('Sucesso:', data);
+				console.log('Sucesso:', data);
+				if(isChecked)
+					document.querySelector('#list-status').appendChild(document.querySelector('#adm'+moderatorId));
+				else
+					document.querySelector('#list-not-status').appendChild(document.querySelector('#adm'+moderatorId));
+				document.querySelector('#all'+moderatorId +' .form-check-input').checked = isChecked
+				document.querySelector('#adm'+moderatorId +' .form-check-input').checked = isChecked
+
 			})
 			.catch((error) => {
 			  console.error('Erro:', error);
 			});
+
+
 		  });
 		});
 		</script>

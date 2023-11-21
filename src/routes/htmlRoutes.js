@@ -13,9 +13,6 @@ const Authcation = require('../MiddleWares/AuthId')
 const permissionCheck = require('../MiddleWares/permissionCheck');
 
 
-router.get('/', (req, res) =>{
-    
- })
 
  router.get('/login', (req, res) =>{
     console.log("pagina pegada com sucesso")
@@ -30,8 +27,8 @@ router.get('/registro', async (req, res) =>{
 })
 
 
-router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async (req,res) => {
-    
+router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERATOR','ADMIN'),permissionCheck.verifyStatus(), async (req,res) => {
+    if(isNaN(req.params.id)) return;
     channel = await ChannelController.getChannelById(req.params.id);
 
     if(!channel){
@@ -41,12 +38,13 @@ router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERA
         dadosSensoresADM: channel.Sensores,
         channelId: req.params.id,
         userId: req.query.id,
+        permission: req.data_user.dataValues.permission_type,
     });
 })
 
 
-router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async (req, res) => {
-
+router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'),permissionCheck.verifyStatus(), async (req, res) => {
+    if(isNaN(req.params.id)) return;
     try{
         user = UserController.getUserById(req.user_id)
         if(user.permission_type == "ADMIN"){
@@ -61,57 +59,55 @@ router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODER
 
 
 router.get('/sensors/:id', AuthMiddle, async (req, res) => {
-
+    if(isNaN(req.params.id)) return;
     try{
         user = UserController.getUserById(req.user_id)
         if(user.permission_type == "ADMIN"){
             return res.redirect('/index/adm/')
         }
-        res.render(path.join(__dirname, '../views/html/user/charts.ejs'), {dadosSensores: await ChannelController.getAllSensors(req.params.id)});
+        res.render(path.join(__dirname, '../views/html/user/charts.ejs'), {userId: req.user_id,dadosSensores: await ChannelController.getAllSensors(req.params.id)});
     }catch(err){
         console.log(err)
     }
     
 })
 
-router.get('/sensor/create/:id', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {
+router.get('/sensor/create/:id', permissionCheck.verifyUserPermission('MODERATOR'),permissionCheck.verifyStatus(), async (req, res) => {
+    if(isNaN(req.params.id)) return;
     res.render(path.join(__dirname, '../views/html/moderator/createSensor.ejs'), {channelId: req.params.id,userId: req.user_id}) 
 })
 
 
 
-router.get('/channel/create', permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {
+router.get('/channel/create', permissionCheck.verifyUserPermission('MODERATOR'),permissionCheck.verifyStatus(), async (req, res) => {
     res.render(path.join(__dirname, '../views/html/moderator/createChannel.ejs'), {userId: req.user_id}) 
 })
 
 
 
-router.get('/channel/edit/:id', permissionCheck.verifyUserPermission('MODERATOR'), async(req, res) => {
-    res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {userId: req.user_id,dadosSensoresADM: await ChannelController.getAllSensors(req.params.id)})
-})
-
-
-router.post('/deletarSensorClient/:id', AuthMiddle, async(req, res) => {
-    
-    //await UserController.deletChannelByuser();
+router.get('/channel/edit/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'),permissionCheck.verifyStatus(), async(req, res) => {
+    if(isNaN(req.params.id)) return;
+    res.render(path.join(__dirname, '../views/html/moderator/edit_channel.ejs'), {userId: req.user_id,channel: await ChannelController.getChannelById(req.params.id)})
 })
 
 
 
 
-router.get('/sensor/edit/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async(req, res) => {
+
+router.get('/sensor/edit/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'),permissionCheck.verifyStatus(), async(req, res) => {
     res.render(path.join(__dirname, '../views/html/moderator/edit_sensor.ejs'), {userId: req.user_id,dadoSensor: await SensorController.getSensorById(req.params.id)})
 })
 
 router.post('/admDeletarSensor/:id', permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async(sensorId) => {
+    if(isNaN(req.params.id)) return;
     const idDelete = sensorId.params.id
     console.log("recebido")
     await SensorController.deleteSensor(idDelete);
 })
 
 
-router.get('/:id', AuthMiddle, Authcation, async (req, res) => {
-  
+router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERATOR'),AuthMiddle, Authcation,permissionCheck.verifyStatus(), async (req, res) => {
+    if(isNaN(req.params.id)) return;
     try {
         const userId = req.params.id;
         const user = await UserController.getUserById(userId);
@@ -149,17 +145,18 @@ router.get('/:id', AuthMiddle, Authcation, async (req, res) => {
     }
 });
 
-router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission('ADMIN'), async (req, res) => {
-    
+router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission('ADMIN'),permissionCheck.verifyStatus(), async (req, res) => {
+    if(isNaN(req.params.id)) return;
     //if(!req.query.id) throw Error("não ah id")
-
     const channels = await ChannelController.getAllChannelByModerator(req.params.id);
-
-    res.render(path.join(__dirname, '../views/html/moderator/channel.ejs'), {
+    const mod = await UserController.getUserById(req.params.id);
+    res.render(path.join(__dirname, '../views/html/admin/mod_channels.ejs'), {
         dados: channels,
         permision: 'ADMIN',
         userID:req.params.id,
-        userId:req.user_id
+        userId:req.user_id,
+        modId: req.params.id,
+        modName: mod.name,
     });
 });
 

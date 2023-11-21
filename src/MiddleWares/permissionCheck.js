@@ -16,9 +16,9 @@ function verifyUserPermission(...requiredPermissions) {
 
       const decodedToken = await promisify(jwt.verify)(authToken, process.env.SECRET);
       req.user_id = decodedToken.id;
-
+      
       const user = await UserController.getUserById(req.user_id);
-
+      req.data_user = user;
       if (!user) {
         return res.status(401).json({
           error: true,
@@ -26,6 +26,7 @@ function verifyUserPermission(...requiredPermissions) {
           message: 'Usuário não existe',
         });
       }
+
 
       if (requiredPermissions.includes(user.permission_type)) {
         next();
@@ -40,6 +41,25 @@ function verifyUserPermission(...requiredPermissions) {
 }
 
 
+
+function verifyStatus() {
+  return async (req, res, next) => {
+    try {
+
+      if (req.data_user.dataValues.status =='ACTIVE') {
+        next();
+      } else {
+        res.status(403).json({ error: 'Acesso negado: Conta desligada' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erro ao verificar permissões' });
+    }
+  };
+}
+
+
 module.exports = {
+    verifyStatus,
     verifyUserPermission,
 };

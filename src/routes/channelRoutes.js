@@ -2,7 +2,8 @@ const {Router} = require('express');
 const ChannelController = require('../Controller/ChannelController')
 const UserController = require('../Controller/UserController')
 const permissionCheck = require('../MiddleWares/permissionCheck');
-const RandomToken = require('../Utils/Random')
+const RandomToken = require('../Utils/Random');
+const { compareSync } = require('bcrypt');
 
 
 const router = Router();
@@ -34,9 +35,8 @@ router.get('/',permissionCheck.verifyUserPermission("ADMIN"), async (req, res) =
 // Rota para criar um novo canal
 router.post('/',permissionCheck.verifyUserPermission('MODERATOR'), async (req, res) => {    
     try {
-        const channelData = req.body;
         const channel = await ChannelController.createChannel({name: req.body.name,description: req.body.description,creator_id: req.user_id, token_read: RandomToken(16), token_write: RandomToken(16)});
-        res.status(200);
+        res.status(200).json({success: true, msg: 'sucesso'});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar canal.' });
@@ -55,6 +55,35 @@ router.get('/u/:id',permissionCheck.verifyUserPermission("USER"), async (req, re
     }
 });
 
+// Rota para excluir um canal pelo ID 
+router.get('/a/:id',permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async (req, res) => {
+    try {
+        const channelId = req.params.id;
+        
+        a = await ChannelController.deleteChannel(channelId);
+       
+        res.status(200).redirect('/index/admin/moderator-channels/'+req.query.modId);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao excluir canal.' });
+    }
+});
+
+router.get('/m/:id',permissionCheck.verifyUserPermission('MODERATOR','ADMIN'), async (req, res) => {
+    try {
+        const channelId = req.params.id;
+        
+        a = await ChannelController.deleteChannel(channelId);
+       
+        res.status(200).redirect('/index/'+req.user_id);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao excluir canal.' });
+    }
+});
+
+
+
 
 
 // Rota para pegar um canal pelo ID
@@ -72,13 +101,14 @@ router.get('/:id', async (req, res) => {
 
 
 // Rota para editar um canal pelo ID
-router.put('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"), async (req, res) => {
-
+router.put('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"),permissionCheck.verifyStatus(), async (req, res) => {
+    if(isNaN(req.params.id)) return;
     try {
         const channelId = req.params.id;
         const updatedData = req.body;
+        console.log(channelId)
         const channel = await ChannelController.updateChannel(channelId, updatedData);
-        res.status(200).json(channel);
+        res.status(200).json({msg: 'sucesso'});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao editar canal.' });
@@ -88,7 +118,7 @@ router.put('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"), asy
 
 
 // Rota para excluir um canal pelo ID
-router.delete('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"), async (req, res) => {
+router.delete('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"),permissionCheck.verifyStatus(), async (req, res) => {
     try {
         const channelId = req.params.id;
         await ChannelController.deleteChannel(channelId)
@@ -100,7 +130,7 @@ router.delete('/:id',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"), 
 });
 
 // Rota para adicionar um sensor a um canal
-router.post('/add-sensor-to-channel', async(req,res) => {
+router.post('/add-sensor-to-channel',permissionCheck.verifyUserPermission("ADMIN","MODERATOR"),permissionCheck.verifyStatus(), async(req,res) => {
     try {
         const channelId = req.query.c;
         const sensorId = req.query.s;
