@@ -30,14 +30,14 @@ router.get('/registro', async (req, res) =>{
 router.get('/channel/:id/edit_view',permissionCheck.verifyUserPermission('MODERATOR','ADMIN'),permissionCheck.verifyStatus(), async (req,res) => {
     if(isNaN(req.params.id)) return;
     channel = await ChannelController.getChannelById(req.params.id);
-
+    
     if(!channel){
         return res.send("canal não existe")
     }
     res.render(path.join(__dirname, '../views/html/moderator/adm-editchannel.ejs'), {
         dadosSensoresADM: channel.Sensores,
         channelId: req.params.id,
-        userId: req.query.id,
+        userId: req.user_id,
         permission: req.data_user.dataValues.permission_type,
     });
 })
@@ -153,7 +153,7 @@ router.get('/admin/moderator-channels/:id',permissionCheck.verifyUserPermission(
     res.render(path.join(__dirname, '../views/html/admin/mod_channels.ejs'), {
         dados: channels,
         permision: 'ADMIN',
-        userID:req.params.id,
+        userID:req.user_id,
         userId:req.user_id,
         modId: req.params.id,
         modName: mod.name,
