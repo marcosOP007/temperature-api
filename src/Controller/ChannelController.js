@@ -26,7 +26,7 @@ async function getAllChannelByModerator(moderatorId) {
         const channel = await Channel.findAll({
             where: { creator_id: moderatorId }
         });
-
+        return;
         console.log('Channels for moderatorId:', moderatorId, channel);
 
         if (!channel) {
