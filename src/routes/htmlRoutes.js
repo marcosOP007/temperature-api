@@ -116,6 +116,7 @@ router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERAT
         const userPermission = user.permission_type;
 
         console.log("user permission " + userPermission + " logged")
+        return;
         if (userPermission === 'USER') {
             const data = await UserController.getAllChannelsByUser(userId);
 
