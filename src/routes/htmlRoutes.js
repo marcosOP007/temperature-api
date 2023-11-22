@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const router = Router();
-const fs = require('fs');
 const UserController = require('../Controller/UserController')
 const ChannelController = require('../Controller/ChannelController')
 const SensorController = require('../Controller/SensorController');
@@ -21,7 +20,6 @@ const permissionCheck = require('../MiddleWares/permissionCheck');
     
 router.get('/registro', async (req, res) =>{
     console.log(await (UserController.getAllModerator()))
-    const fs = require('fs');
     res.render(path.join(__dirname, '../views/html/public/registro.ejs'));
     
 })
@@ -111,7 +109,6 @@ router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERAT
     try { 
         const userId = req.params.id;
         const user = await UserController.getUserById(userId);
-        //console.log("=======================================================" , user)
         
         if (!user) {
             return res.render(path.join(__dirname, '../views/html/public/login.ejs'));
