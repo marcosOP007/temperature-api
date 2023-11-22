@@ -116,12 +116,14 @@ router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERAT
         const userPermission = user.permission_type;
 
         console.log("user permission " + userPermission + " logged")
-        return;
+        
         if (userPermission === 'USER') {
             const data = await UserController.getAllChannelsByUser(userId);
 
             res.render(path.join(__dirname, '../views/html/user/index.ejs'), { dados: data, userId:userId,  userID: userId });
         } else if (userPermission === 'MODERATOR') {
+            console.log("here")
+            return;
             res.render(path.join(__dirname, '../views/html/moderator/index.ejs'), {
                 dados: await ChannelController.getAllChannelByModerator(userId),
                 userId:userId,
