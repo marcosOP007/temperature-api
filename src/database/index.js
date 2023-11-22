@@ -9,7 +9,6 @@ const TemperatureLog = require('../models/TemperatureLogs')
 
 
 const connection = new Sequelize(process.env.DB_URI,dbConfig);
-
 User.init(connection);
 Channel.init(connection);
 Sensor.init(connection);

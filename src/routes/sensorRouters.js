@@ -120,6 +120,7 @@ router.delete('/:id', async (req, res) => {
 
 // Rota para obter todos os registros de temperatura de um sensor
 router.get('/:id/temperature-logs', async (req, res) => {
+    console.log("pegando todos os logs")
     try {
         const data = await SensorController.getAllTemperatureLogs(req.params.id);
         res.status(200).json(data);

@@ -15,6 +15,11 @@ module.exports = {
             rejectUnauthorized: false
         }*/
     },
+    pool: {
+        max: 1,      // número máximo de conexões no pool
+        min: 0,      // número mínimo de conexões no pool
+        idle: 10000  // tempo máximo, em milissegundos, que uma conexão pode ficar ociosa antes de ser liberada
+    },
     define: {
         timestamps: true,
         underscored: true,

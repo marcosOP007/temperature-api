@@ -1,4 +1,4 @@
-const {Router} = require('express');
+const {Router, query} = require('express');
 const { body, validationResult } = require('express-validator');
 const UserController = require('../Controller/UserController')
 const TemperatureLogController = require('../Controller/TemperatureLogController')
@@ -46,27 +46,30 @@ router.post('/temperature-logs', async (req, res) => {
     try {
         counter = 1;
         const sensorSize = Object.keys(channel.Sensores).length
+        console.log('dado na query',req.query)
         for(var key in req.query){
-
+            
             if(counter > sensorSize) break;
 
             if(key === 'campo'+counter){
                 console.log("sensor " + counter + " identificado")
-                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[counter-1].id, temperature: req.query[key]+(channel.Sensores[counter-1].corretion_temperature ?  channel.Sensores[counter-1].corretion  : 0)});
+                await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[counter-1].id, temperature: parseFloat(req.query[key])+(channel.Sensores[counter-1].corretion_temperature ?  parseFloat(channel.Sensores[counter-1].corretion)  : 0)});
                 counter++;
+                console.log("create")
             }
         }
         if( counter <= sensorSize){
+            console.log("create")
             for(var i = sensorSize-counter; i < sensorSize; i++){
                 await TemperatureLogController.createTemperatureLog({sensor_id: channel.Sensores[i].id, temperature: -273});
             }        
         }
-
+        
         res.status(200).send("sucess")
        // const newTemperatureLog = await TemperatureLogController.createTemperatureLog(req.body);
         //res.status(201).json(newTemperatureLog);
     } catch (error) {
-        handleError(res, error);
+        console.log('ERROR in save temperature: ', error)
     }
 });
 
