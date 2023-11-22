@@ -15,7 +15,9 @@ const permissionCheck = require('../MiddleWares/permissionCheck');
 
  router.get('/login', async (req, res) =>{
     console.log("pagina pegada com sucesso")
-   res.render(path.join(__dirname, '../views/html/public/login.ejs'), {dadoaleatorio: await ChannelController.getAllChannelByModerator(2)})
+    let x = await ChannelController.getAllChannelByModerator(2);
+    return;
+   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
 })
     
 router.get('/registro', async (req, res) =>{
