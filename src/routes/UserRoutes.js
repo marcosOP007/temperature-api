@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
     });
 
     
-    return res.redirect(`/index/${user.id}`)
+    res.redirect(`/index/${user.id}`)
     
     
   } catch (error) {
