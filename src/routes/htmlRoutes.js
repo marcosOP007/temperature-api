@@ -13,9 +13,9 @@ const permissionCheck = require('../MiddleWares/permissionCheck');
 
 
 
- router.get('/login', (req, res) =>{
+ router.get('/login', async (req, res) =>{
     console.log("pagina pegada com sucesso")
-   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
+   res.render(path.join(__dirname, '../views/html/public/login.ejs'), {dadoaleatorio: await ChannelController.getAllChannelByModerator(2)})
 })
     
 router.get('/registro', async (req, res) =>{
@@ -124,7 +124,7 @@ router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERAT
         } else if (userPermission === 'MODERATOR') {
             
             
-            return res.render(path.join(__dirname, '../views/html/moderator/index.ejs'), {
+            res.render(path.join(__dirname, '../views/html/moderator/index.ejs'), {
                 dados: await ChannelController.getAllChannelByModerator(userId),
                 userId:userId,
             });
