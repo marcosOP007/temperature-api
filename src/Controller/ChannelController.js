@@ -23,13 +23,11 @@ async function getChannelById(channelId) {
 
 async function getAllChannelByModerator(moderatorId) {
     try {
-        return;
         const channel = await Channel.findAll({
             where: { creator_id: moderatorId }
         });
         
-        console.log('Channels for moderatorId:', moderatorId, channel);
-
+        
         if (!channel) {
             throw new Error('Canal não encontrado.');
         }

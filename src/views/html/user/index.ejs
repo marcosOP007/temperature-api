@@ -59,7 +59,7 @@
 						<div class="app-card app-card-orders-table shadow-sm mb-5">
 							<div class="app-card-body">
 								<div class="table-responsive">
-									<table class="table app-table-hover mb-0 text-left">
+									<table class="table app-table-hover mb-0 text-left tabela1 table-striped">
 										<thead>
 											<tr>
 												<th class="cell">ID Do Canal</th>
@@ -67,6 +67,7 @@
 												<th class="cell">Data de Criação</th>
 												<th class="cell">Data de Atualização</th>
 												<th class="cell">Chave de Leitura</th>
+												<th class="cell">Opcões</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -252,6 +253,73 @@
 	<script src="/assets/plugins/popper.min.js"></script>
 	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+	
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+
+	<script>
+		$(document).ready(function() {
+			$('.tabela1').DataTable({
+				"language": {
+					"lengthMenu": "Mostrando _MENU_ registros por página",
+					"zeroRecords": "Nada encontrado",
+					"info": "Mostrando página _PAGE_ de _PAGES_",
+					"infoEmpty": "Nenhum usuário disponível",
+					"infoFiltered": "(filtrado de _MAX_ registros no total)",
+					"search": "Pesquisar:",
+					"paginate": {
+						"next": " Próximo",
+						"previous": "Anterior "
+					}
+				}
+			});
+		});
+
+		document.querySelectorAll(".form-check-input").forEach(function(checkbox) {
+		  checkbox.addEventListener('change', function() {
+			var isChecked = this.checked;
+			var state = isChecked ? "ACTIVE" : "INACTIVE";
+			var moderatorId = this.getAttribute('data-id');
+		
+			// Enviar uma requisição POST quando o estado do checkbox muda
+			fetch('/auth/inv-status/'+moderatorId, {
+			  method: 'POST',
+			  headers: {
+				'Content-Type': 'application/json',
+			  },
+			  body: JSON.stringify({ state: state}),
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log('Sucesso:', data);
+				
+
+			})
+			.catch((error) => {
+			  console.error('Erro:', error);
+			});
+
+
+		  });
+		});
+		</script>
+
+
+	<style>
+		.dataTables_filter input {
+			border-radius: 5px;
+		}
+		.dataTables_length select {
+			border-radius: 5px;
+		}
+	</style>
+
+
 
 	<!-- Page Specific JS -->
 	<script src="/assets/js/app.js"></script>

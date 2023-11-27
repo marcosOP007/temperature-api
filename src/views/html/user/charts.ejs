@@ -94,6 +94,32 @@
 			const ctx = document.getElementById(`chart-line-${sensor.id}`);
 
 			const dataSensor = await getLogDetails(sensor.id);
+
+			const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: dataSensor[1],
+        datasets: [{
+            tension: 0.15,
+            fill: 'origin',
+            label: 'Temperatura °C',
+            borderColor: 'rgba(255, 0, 0, 0.47)',
+            hitRadius: 200,
+            backgroundColor: 'rgba(255, 0, 0, 0.17)',
+            data: dataSensor[0],
+            borderWidth: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: false } }
+    }
+});
+
+
+
+
+/*
 			const chart = new Chart(ctx, {
 				type: 'line',
 				data: {
@@ -130,7 +156,8 @@
 							colorStops.forEach((stop, index) => {
 								// Normalizar a temperatura para um valor entre 0 e 1
 
-								const stopValue = (stop.temp -  minTemp) / tempRange;
+									const stopValue = Math.min (Math.max (Math.abs( (stop.temp -  minTemp) / tempRange), 0),1 );
+								console.log("minimo",minTemp, stop.temp)
 								gradientBg.addColorStop(stopValue, stop.color);
 							});
 
@@ -148,7 +175,7 @@
 					scales: { y: { beginAtZero: false } }
 				}
 			});
-	
+	*/
 			setInterval(() => updateChart(sensor.id, chart),10000);
 		}
 			

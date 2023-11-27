@@ -15,9 +15,8 @@ const permissionCheck = require('../MiddleWares/permissionCheck');
 
  router.get('/login', async (req, res) =>{
     console.log("pagina pegada com sucesso")
-    let x = await ChannelController.getAllChannelByModerator(2);
-    return;
-   res.render(path.join(__dirname, '../views/html/public/login.ejs'))
+
+    res.render(path.join(__dirname, '../views/html/public/login.ejs'))
 })
     
 router.get('/registro', async (req, res) =>{
@@ -55,6 +54,17 @@ router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODER
         console.log(err)
     }
     
+
+})
+
+router.get('/teste',permissionCheck.verifyUserPermission('ADMIN'),permissionCheck.verifyStatus(), async (req,res) => {
+    const channels = await UserController.getAllUsers();
+    res.render(path.join(__dirname, '../views/html/admin/mod_users.ejs'), {
+        dados: channels,
+        permision: 'ADMIN',
+        userId:req.user_id,
+       
+    });
 })
 
 
@@ -133,7 +143,7 @@ router.get('/:id', permissionCheck.verifyUserPermission('ADMIN','USER', 'MODERAT
 
         } else if (userPermission === 'ADMIN') {
             
-            res.render(path.join(__dirname, '../views/html/admin/index.ejs'), {
+            res.render(path.join(__dirname, '../views/html/admin/index2.ejs'), {
                 dados: await UserController.getAllModerator(),
                 userId:userId,
             });

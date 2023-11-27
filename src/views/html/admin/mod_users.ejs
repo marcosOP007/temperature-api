@@ -53,61 +53,51 @@
 				</div><!--//row-->
 
 
-			
+				
+
 				<div class="tab-content" id="orders-table-tab-content">
 					<div class="tab-pane fade show active" id="orders-all" role="tabpanel"
 						aria-labelledby="orders-all-tab">
 						<div class="app-card app-card-orders-table shadow-sm mb-5">
 							<div class="app-card-body">
 								<div class="table-responsive">
-									<table class="table app-table-hover mb-0 text-left table-striped tabela1">
+									<table  class="table app-table-hover mb-0 text-left tabela1 table-striped">
 										<thead>
 											<tr>
 												<th class="cell">Id</th>
 												<th class="cell">Nome</th>
 												<th class="cell">Email</th>
-												<th class="cell">Data de Criação</th>	
+												<th class="cell">Permissão</th>	
 												<th class="cell">Status</th>
-												<th class="cell">Opções</th>
 											</tr>
 										</thead>
 										<tbody>
 
 											<%for(i=0; i < dados.length; i++){%>
+												<% if(dados[i].permission_type === 'ADMIN') continue%>
 												<tr id="all<%-dados[i].id%>">
 													<td><%-dados[i].id%></td>
 													<td><%-dados[i].name%></td>
 													<td><%-dados[i].email%></td>
-													<td><%-dados[i].createdAt%></td>
+													<td>
+														<select class="form-select-sm" data-id="<%-dados[i].id%>">
+															<% if(dados[i].permission_type === 'USER') {%>
+														  <option value="USER" selected>USER</option>
+														  <option value="MODERATOR" >MODERADOR</option>
+														  <% } else { %>
+															<option value="USER">USER</option>
+															<option value="MODERADOR" selected>MODERADOR</option>
+															<% }  %>
+														</select>
+													</td>
+													  
+
 													<td>    
 														<div class="form-check form-switch">
 														  <input d-id="<%-dados[i].id%>" data-id="<%-dados[i].id%>" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" <% if(dados[i].status == 'ACTIVE') { %>checked<% } %> >
 														</div>
 													</td>
-													
-													<td>
-														<div class="dropdown">
-															<div class="dropdown-toggle no-toggle-arrow" data-bs-toggle="dropdown" aria-expanded="false">
-																<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-															<path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-															</svg>
-																						</div><!--//dropdown-toggle-->
-															<ul class="dropdown-menu">
-																<li><a class="dropdown-item" href="<%= `/index/admin/moderator-channels/${dados[i].id}`%>"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-																	<path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
-																	<path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-																	</svg>Canais</a></li>
-																						
-					
-																											<li><hr class="dropdown-divider"></li>
-																											<li><a class="dropdown-item" href="<%= `/auth/delet-moderator/${dados[i].id}`%>"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash me-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-																	<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-																	<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-																	</svg>Deletar</a></li>
-															</ul>
-														</div>
-
-													</td>
+													  
 													
 												</tr>
 											<%}%>
@@ -127,6 +117,7 @@
 
 
 					
+
 				</div><!--//tab-content-->
 
 				
@@ -148,16 +139,15 @@
 
 
 
-		<!-- Javascript -->
+
+	<!-- Javascript -->
 	<script src="/assets/plugins/popper.min.js"></script>
 	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-
 
 	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-
 	<script>
 		$(document).ready(function() {
 			$('.tabela1').DataTable({
@@ -193,8 +183,7 @@
 			.then(response => response.json())
 			.then(data => {
 				console.log('Sucesso:', data);
-				
-
+	
 			})
 			.catch((error) => {
 			  console.error('Erro:', error);
@@ -203,20 +192,44 @@
 
 		  });
 		});
-		</script>
-		
 
-		<style>
-			.dataTables_filter input {
-				border-radius: 5px;
-			}
-			.dataTables_length select {
-				border-radius: 5px;
-			}
-		</style>
-	
+		document.querySelectorAll(".form-select-sm").forEach(function(selecetbox) {
+			selecetbox.addEventListener('change', function() {
+				var perm = this.value;
+				var id = this.getAttribute('data-id');
+				
+				// Enviar uma requisição POST quando o estado do checkbox muda
+				fetch('/auth/changed-perm/'+id, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ perm: perm}),
+				})
+				.then(response => response.json())
+				.then(data => {
+					
+
+				})
+				.catch((error) => {
+				console.error('Erro:', error);
+				});
 
 
+		  });
+		});
+
+
+	</script>
+
+	<style>
+		.dataTables_filter input {
+			border-radius: 5px;
+		}
+		.dataTables_length select {
+			border-radius: 5px;
+		}
+	</style>
 
 
 
