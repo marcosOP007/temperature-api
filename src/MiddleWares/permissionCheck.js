@@ -29,13 +29,16 @@ function verifyUserPermission(...requiredPermissions) {
 
 
       if (requiredPermissions.includes(user.permission_type)) {
+        
         next();
       } else {
-        res.status(403).json({ error: 'Acesso negado: Permissão insuficiente' });
+        
+       return res.redirect('/index/v/not-autorized')
+       // res.status(403).json({ error: 'Acesso negado: Permissão insuficiente' });
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Erro ao verificar permissões' });
+      return res.redirect(`/index/v/not-autorized?user_id`);
     }
   };
 }

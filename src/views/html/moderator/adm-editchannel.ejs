@@ -62,7 +62,7 @@
 						<div class="app-card app-card-orders-table shadow-sm mb-5">
 							<div class="app-card-body">
 								<div class="table-responsive">
-									<table class="table app-table-hover mb-0 text-left">
+									<table class="table app-table-hover mb-0 text-left tabela1 table-striped">
 										<thead>
 											<tr>
 												<th class="cell">#</th>
@@ -72,6 +72,8 @@
 												<th class="cell">Correção de Temperatura</th>
 												<th class="cell">Localização</th>
 												<th class="cell">Status</th>
+												<th class="cell">Opções</th>
+
 											</tr>
 										</thead>
 										<tbody>
@@ -189,6 +191,44 @@
 	<!-- Javascript -->
 	<script src="/assets/plugins/popper.min.js"></script>
 	<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+	
+	<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+	
+	<script>
+		$(document).ready(function() {
+			$('.tabela1').DataTable({
+				"language": {
+					"lengthMenu": "Mostrando _MENU_ registros por página",
+					"zeroRecords": "Nada encontrado",
+					"info": "Mostrando página _PAGE_ de _PAGES_",
+					"infoEmpty": "Nenhum canal criado",
+					"infoFiltered": "(filtrado de _MAX_ registros no total)",
+					"search": "Pesquisar:",
+					"paginate": {
+						"next": " Próximo",
+						"previous": "Anterior "
+					}
+				}
+			});
+		});
+
+	</script>
+
+	<style>
+		.dataTables_filter input {
+			border-radius: 5px;
+		}
+		.dataTables_length select {
+			border-radius: 5px;
+		}
+	</style>
+
 
 
 	<!-- Page Specific JS -->

@@ -22,26 +22,26 @@ router.post('/login', async (req, res) => {
 
   // validations
   if (!email) {
-    return res.status(422).json({ msg: "O email é obrigatório!" });
+    return res.render(path.join(__dirname, '../views/html/public/login.ejs'), {message: "O email é obrigatório!"})
   }
 
   if (!password) {
-    
-    return res.status(422).json({ msg: "A senha é obrigatória!" });
+    return res.render(path.join(__dirname, '../views/html/public/login.ejs'), {message: "A senha é obrigatória!"})
+
   }
 
   // check if user exists
   const user = await UserController.getUserByEmail(email);
 
   if (!user) {
-    return res.status(404).json({ msg: "Usuário não encontrado!" });
+    return res.render(path.join(__dirname, '../views/html/public/login.ejs'), {message: "email ou senha incorreto"})
   }
       
 // check if password match
   const checkPassword = await bcrypt.compare(password, user.hash_password);
 
   if (!checkPassword) {
-    return res.status(422).json({ msg: "Senha inválida" });
+    return res.render(path.join(__dirname, '../views/html/public/login.ejs'), {message: "email ou senha incorreto"})
   }
   
   try {
@@ -57,8 +57,8 @@ router.post('/login', async (req, res) => {
     
     
   } catch (error) {
-    
-    res.status(500).json({ msg: 'Erro no Servidor, tente mais tarde!!' });
+    return res.render(path.join(__dirname, '../views/html/public/login.ejs'), {message: 'Erro no Servidor, tente mais tarde'})
+
   }
 
 })
@@ -79,22 +79,15 @@ router.post('/register', async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
   
   
-  if(!name ) {
-      return res.status(422).json({msg : 'nome obrgatório!!'})
-  }
+  if(!name ) 
+      return res.render(path.join(__dirname, '../views/html/public/registro.ejs'), {message: "nome obrigatório!!"})
+  else if(!email )   
+      return res.render(path.join(__dirname, '../views/html/public/registro.ejs'), {message: "email obrigatório!!"})
+  else if(!password ) 
+      return res.render(path.join(__dirname, '../views/html/public/registro.ejs'), {message: "senha obrigatória!!"})
+  else if(confirmPassword !== password) 
+      return res.render(path.join(__dirname, '../views/html/public/registro.ejs'), {message: "senhas diferente"})
   
-  if(!email ) {
-    
-    return res.status(422).json({msg : 'email obrigatório!!'})
-  }
-  
-  if(!password ) {
-      return res.status(422).json({msg : 'passowrd obrgatório!!'})
-  }
-  
-  if(confirmPassword !== password) {
-      return res.status(422).json({msg : 'senha diferente da confirmação de senha'})
-  }
 
 
   userExists = await UserController.getUserByEmail(email);

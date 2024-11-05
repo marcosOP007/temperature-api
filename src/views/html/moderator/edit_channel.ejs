@@ -40,9 +40,13 @@
 						<input type="text" class="form-control" value="<%-channel.description%>" id="channelDescription">
 					</div>
 					<button type="button" class="btn btn-primary text-white" onclick="update(<%-channel.id%>)">Atualizar</button>
-				     <a href="/index/channel/<%- channel.id %>/edit_view">
-						<button type="button" class="btn btn-info text-white" >	Sensores </button>
-					 </a>	
+				    	
+					 <a href="<%= `/index/${userId}`%>"> 
+						<button type="button" class="btn btn-primary text-white">Voltar</button>
+				   </a>
+				   <a href="/index/channel/<%- channel.id %>/edit_view">
+					<button type="button" class="btn btn-primary text-white" >	Sensores </button>
+				 </a>
 				</form>
 			</div>
 		</div>

@@ -28,11 +28,8 @@ module.exports = async (req, res, next) => {
       req.user_id = decoded.id;
 
       if(req.params.id != req.user_id){
-         return res.status(401).json({
-           error: true,
-           code: 130,
-           message: "Acesso negado!"
-         })
+        
+        return res.redirect(`/index/v/not-autorized?user_id=${req.user_id}`);
       }
 
       
@@ -40,12 +37,8 @@ module.exports = async (req, res, next) => {
       next();
     }
     
-  } catch {
-    return res.status(401).json({
-      error: true,
-      code: 130,
-      message: "O token está inválido!"
-    })
+  } catch (err){
+    return res.redirect(`/index/v/not-autorized?user_id=${req.user_id}`);
   }
 
 }

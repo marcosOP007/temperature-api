@@ -57,7 +57,7 @@ router.get('/sensors/:id/edit_view', permissionCheck.verifyUserPermission('MODER
 
 })
 
-router.get('/teste',permissionCheck.verifyUserPermission('ADMIN'),permissionCheck.verifyStatus(), async (req,res) => {
+router.get('/users',permissionCheck.verifyUserPermission('ADMIN'),permissionCheck.verifyStatus(), async (req,res) => {
     const channels = await UserController.getAllUsers();
     res.render(path.join(__dirname, '../views/html/admin/mod_users.ejs'), {
         dados: channels,
@@ -68,14 +68,13 @@ router.get('/teste',permissionCheck.verifyUserPermission('ADMIN'),permissionChec
 })
 
 
-router.get('/sensors/:id', AuthMiddle, async (req, res) => {
+router.get('/sensors/:id',permissionCheck.verifyUserPermission('ADMIN','MODERATOR','USER'),permissionCheck.verifyStatus(), AuthMiddle, async (req, res) => {
     if(isNaN(req.params.id)) return;
     try{
+        
         user = UserController.getUserById(req.user_id)
-        if(user.permission_type == "ADMIN"){
-            return res.redirect('/index/adm/')
-        }
-        res.render(path.join(__dirname, '../views/html/user/charts.ejs'), {userId: req.user_id,dadosSensores: await ChannelController.getAllSensors(req.params.id)});
+        
+        res.render(path.join(__dirname, '../views/html/user/charts.ejs'), {userId: req.user_id,dadosSensores: await ChannelController.getAllSensors(req.params.id), perm: req.data_user.dataValues.permission_type});
     }catch(err){
         console.log(err)
     }
@@ -176,6 +175,7 @@ router.get('/v/not-autorized', async(req, res)=> {
 
     res.status(401).render(path.join(__dirname, '../views/html/public/401.ejs'), {
         login: (req.cookies.token !== undefined ? true : false),
+        userId: req.query.user_id,
     });
 })
 

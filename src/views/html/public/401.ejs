@@ -13,7 +13,7 @@
 	<!-- FontAwesome JS-->
 	<script defer src="/assets/js/app.js"></script>
 
-	<!-- App CSS -->
+	<!-- App CSS   -->
 	<link id="theme-style" rel="stylesheet" href="/assets/css/portal.css">
 </head> 
 
@@ -25,13 +25,18 @@
 			    <div class="app-branding text-center mb-5">
 		            <a class="app-logo" href="index.html"><img class="logo-icon me-2" src="assets/images/app-logo.svg" alt="logo"><span class="logo-text">Imprimo3d</span></a>
 	
-		        </div><!--//app-branding-->  
+		        </div><!--//app-branding   -->  
 			    <div class="app-card p-5 text-center shadow-sm">
 				    <h1 class="page-title mb-4">401<br><span class="font-weight-light">Permissão Não Autorizada</span></h1>
 				    <div class="mb-4">
-                        Desculpe, você não tem permissão para acessar esta página. Se você acredita que isso é um erro, por favor, entre em contato com o nosso suporte.
-                    </div>
-				    <a class="btn app-btn-primary" href="index.html">Voltar ao ínicio</a>
+						Acesso negado. Para suporte, contate-nos. 
+                   </div>
+					<% if(userId && userId != undefined){ %>
+						<a class="btn app-btn-primary" href="/index/<%= userId %>">Ínicio</a>
+					<% } else {%>
+						<a class="btn app-btn-primary" href="/index/login">Login</a>
+					<% }%>
+					  
 			    </div>
 		    </div><!--//col-->
 	    </div><!--//row-->
