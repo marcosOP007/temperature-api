@@ -1,114 +1,82 @@
-const Channel = require('../models/Channel');
-const Sensor = require('../models/Sensor');
+const channelService = require('../services/channelService');
 
-// Função para obter todos os canais
-async function getAllChannels() {
-    return await Channel.findAll();
-}
-
-// Função para criar um novo canal
-async function createChannel(channelData) {
-    return await Channel.create(channelData);
-}
-
-// Função para obter detalhes de um canal pelo ID
-async function getChannelById(channelId) {
-    const channel = await Channel.findByPk(channelId,  {
-        include: { model: Sensor, as: 'Sensores' },
-    });
-
-    if (!channel) throw new Error('Canal não encontrado.');
-    return channel;
-}
-
-async function getAllChannelByModerator(moderatorId) {
+async function getAllChannels(req, res) {
     try {
-        const channel = await Channel.findAll({
-            where: { creator_id: moderatorId }
-        });
-        
-        
-        if (!channel) {
-            throw new Error('Canal não encontrado.');
-        }
-
-        return channel;
+        const channels = await channelService.getAllChannels();
+        res.status(200).json(channels);
     } catch (error) {
-        console.error('Error in getAllChannelByModerator:', error);
-        throw error;
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred on the server' });
+        }
+    }
+
+async function createChannel(req, res) {
+    try {
+        const channel = await channelService.createChannel(req.body);
+        res.status(201).json(channel);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred on the server' });
+    }
+}
+
+async function getChannelById(req, res) {
+    try {
+        const channel = await channelService.getChannelById(req.params.id);
+        res.status(200).json(channel);
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ error: 'An error occurred on the server' });
+    }
+}
+
+async function updateChannel(req, res) {
+    try {
+        const result = await channelService.updateChannel(req.params.id, req.body);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ error: 'An error occurred on the server' });
     }
 }
 
 async function getChannelByToken(channelToken) {
-    return await Channel.findOne({where: {token_read: channelToken}});
-}
-
-async function getChannelTokenWrite(channelToken){
-    return await Channel.findOne({where: {token_write: channelToken}, include: { model: Sensor, as: 'Sensores' }});
-}
-
-// Função para atualizar um canal pelo ID
-async function updateChannel(channelId, channelData) {
-    const [updated] = await Channel.update(channelData, {
-        where: { id: channelId },
-    });
-
-    if (!updated) throw new Error('Canal não encontrado.');
-    return { message: 'Canal atualizado com sucesso.' };
-}
-
-// Função para excluir um canal pelo ID
-async function deleteChannel(channelId) {
-    const deleted = await Channel.destroy({
-        where: { id: channelId },
-    });
-
-    if (!deleted) throw new Error('Canal não encontrado.');
-    return deleted;
-}
-
-
-
-// Função para adicionar sensor a um canal
-async function addSensorToChannel(channelId, sensorId) {
-    const channel = await Channel.findByPk(channelId);
-    const sensor = await Sensor.findByPk(sensorId);
-
-    if (!channel || !sensor) throw new Error('Canal ou sensor não encontrado.');
-
-    await channel.addSensor(sensor);
-    return { message: 'Sensor adicionado ao canal com sucesso.' };
-}
-
-
-async function getAllSensors(channelId) {
-    
     try {
-        const user = await Channel.findByPk(channelId, {
-            include: { model: Sensor, as: 'Sensores' },
-        });
-
-        if (user) {
-            return user.Sensores;
-        } else {
-            return;
-        }
+        const channel = await Channel.findOne({where: {token_read: channelToken}});
+        return channel;
     } catch (error) {
-        return;
+        console.error(error);
+        throw new Error('An error occurred on the server');
     }
 }
 
+async function getChannelTokenWrite(channelToken){
+    try {
+        const channel = await Channel.findOne({where: {token_write: channelToken}, include: { model: Sensor, as: 'Sensores' }});
+        return channel;
+    } catch (error) {
+        console.error(error);
+    throw new Error('An error occurred on the server');
+    }
+}
 
+async function deleteChannel(req, res) {
+    try {
+        const result = await channelService.deleteChannel(req.params.id);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ error: 'An error occurred on the server' });
+    }
+}
 
 module.exports = {
-    getChannelByToken,
-    getChannelTokenWrite,
     getAllChannels,
     createChannel,
     getChannelById,
     updateChannel,
+    getChannelByToken,
+    getChannelTokenWrite,
     deleteChannel,
-    addSensorToChannel,
-    getAllChannelByModerator,
-    getAllSensors,
-};
+    };
+

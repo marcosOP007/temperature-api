@@ -6,7 +6,7 @@ const userRoutes = require('./src/routes/UserRoutes');
 const htmlRoutes = require('./src/routes/htmlRoutes');
 const temperatureLog = require('./src/routes/TemperatureLogRouters')
 const channelRoutes = require('./src/routes/channelRoutes')
-const sensorRoutes = require('./src/routes/sensorRouters')
+const sensorRoutes = require('./src/routes/sensorRouters2')
 const temperatureRoutes = require('./src/routes/TemperatureLogRouters')
 const globalErrorHandler = require('./src/Controller/errorController')
 
@@ -46,7 +46,7 @@ app.use('/index/', htmlRoutes);
 app.use('/api/', datatestRoutes);
 app.use('/auth/', userRoutes); 
 app.use('/api/', temperatureLog);
-app.use('/api/channels/', channelRoutes);
+app.use('/c', channelRoutes);
 app.use('/api/sensors/', sensorRoutes);
 
 app.use('/api/temperature-logs/', temperatureRoutes);
