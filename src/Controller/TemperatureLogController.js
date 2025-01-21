@@ -1,62 +1,60 @@
-const  TemperatureLog = require('../models/TemperatureLogs'); 
+const temperatureLogService = require('../services/temperatureLogService');
 
-
-// Função para listar todos os logs de temperatura
-async function getAllTemperatureLogs() {
+// Get all temperature logs
+async function getAllTemperatureLogs(req, res) {
     try {
-        const temperatureLogs = await TemperatureLog.findAll();
-        return temperatureLogs;
+        const temperatureLogs = await temperatureLogService.getAllTemperatureLogs();
+        return res.status(200).json(temperatureLogs);
     } catch (error) {
-        console.error(error);
-        throw new Error('Erro ao buscar logs de temperatura.');
+        console.error('Error fetching temperature logs:', error);
+        return res.status(500).json({ error: 'Failed to fetch temperature logs.' });
     }
 }
 
-// Função para criar um novo log de temperatura
-async function createTemperatureLog(logData) {
+// Get a temperature log by ID
+async function getTemperatureLogById(req, res) {
     try {
-        const newTemperatureLog = await TemperatureLog.create(logData);
-        return newTemperatureLog;
+        const { id } = req.params; // Extract log ID from request parameters
+        const temperatureLog = await temperatureLogService.getTemperatureLogById(id);
+        return res.status(200).json(temperatureLog);
     } catch (error) {
-        console.error(error);
-        throw new Error('Erro ao criar log de temperatura.');
-    }
-}
-
-// Função para obter detalhes de um log de temperatura pelo ID
-async function getTemperatureLogById(logId) {
-    try {
-        const temperatureLog = await TemperatureLog.findByPk(logId);
-        if (temperatureLog) {
-            return temperatureLog;
-        } else {
-            throw new Error('Log de temperatura não encontrado.');
+        console.error('Error fetching temperature log by ID:', error);
+        if (error.message === 'Temperature log not found.') {
+            return res.status(404).json({ error: error.message });
         }
-    } catch (error) {
-        console.error(error);
-        throw new Error('Erro ao buscar log de temperatura.');
+        return res.status(500).json({ error: 'Failed to fetch temperature log.' });
     }
 }
 
-// Função para deletar todos os logs de temperatura associados a um sensor
-async function deleteAllTemperatureLogsBySensor(sensorId) {
+// Create a new temperature log
+async function createTemperatureLog(req, res) {
     try {
-        const deletedCount = await TemperatureLog.destroy({
-            where: { sensor_id: sensorId },
-        });
-        return deletedCount;
+        const logData = req.body; // Extract log data from request body
+        const newTemperatureLog = await temperatureLogService.createTemperatureLog(logData);
+        return res.status(201).json(newTemperatureLog);
     } catch (error) {
-        console.error(error);
-        throw new Error('Erro ao deletar logs de temperatura do sensor.');
+        console.error('Error creating temperature log:', error);
+        return res.status(500).json({ error: 'Failed to create temperature log.' });
     }
 }
 
-
-
+// Delete all temperature logs by sensor ID
+async function deleteAllTemperatureLogsBySensor(req, res) {
+    try {
+        const { sensorId } = req.params; // Extract sensor ID from request parameters
+        const deletedCount = await temperatureLogService.deleteAllTemperatureLogsBySensor(sensorId);
+        return res.status(200).json({
+            message: `${deletedCount} temperature logs deleted for sensor ${sensorId}.`,
+        });
+    } catch (error) {
+        console.error('Error deleting temperature logs for sensor:', error);
+        return res.status(500).json({ error: 'Failed to delete temperature logs.' });
+    }
+}
 
 module.exports = {
     getAllTemperatureLogs,
-    createTemperatureLog,
     getTemperatureLogById,
+    createTemperatureLog,
     deleteAllTemperatureLogsBySensor,
 };
