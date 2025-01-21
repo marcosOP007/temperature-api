@@ -35,7 +35,7 @@ Estou empolgado para compartilhar este projeto e continuar aprendendo! 🚀
 ### **Instruções**
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/marcosOP007/temperature-apigit
+   git clone https://github.com/marcosOP007/temperature-api.git
    cd temperature-api
    ```
 2. Configure o arquivo .env com as variáveis de ambiente, como:
